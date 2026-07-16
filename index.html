@@ -17,21 +17,15 @@
   --ink:#2B2118;
   --ink-soft:#7A6C56;
   --line:#E4D6AF;
-
   --breakfast:#D9A441;
   --lunch:#C9702F;
   --dinner:#3A4E7A;
-
   --main:#3F6B4A; --main-soft:#E1EAE1;
   --side:#B8842A; --side-soft:#F1E4C6;
   --soup:#4472A8; --soup-soft:#DEE7F2;
   --other:#7A5C8A; --other-soft:#EAE1EF;
-
-  --coin:#C08A15;
-  --coin-dark:#8A6410;
+  --coin:#C08A15; --coin-dark:#8A6410;
   --danger:#B3452C;
-  
-  /* iPhone Safe Areas */
   --safe-top: env(safe-area-inset-top);
   --safe-bottom: env(safe-area-inset-bottom);
 }
@@ -40,22 +34,13 @@ html,body{margin:0;padding:0;height:100%;}
 body{
   font-family:'Noto Sans JP',sans-serif;
   color:var(--ink);
-  background:
-    radial-gradient(var(--paper-dot) 1px, transparent 1.2px) 0 0/16px 16px,
-    var(--paper);
+  background: radial-gradient(var(--paper-dot) 1px, transparent 1.2px) 0 0/16px 16px, var(--paper);
   min-height:100%;
 }
 h1,h2,h3,.brand,.stamp,.tab-label{font-family:'Zen Maru Gothic',sans-serif;}
 #app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;position:relative;}
 
-.topbar{
-  padding: calc(var(--safe-top) + 14px) 16px 10px;
-  border-bottom: 2px solid var(--line);
-  background: var(--paper);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
+.topbar{padding: calc(var(--safe-top) + 14px) 16px 10px; border-bottom: 2px solid var(--line); background: var(--paper); position: sticky; top: 0; z-index: 100;}
 .brand{margin:0;font-size:19px;font-weight:900;}
 
 main{flex:1;padding:14px 14px calc(100px + var(--safe-bottom));overflow-x:hidden;}
@@ -71,15 +56,15 @@ button{font-family:inherit;cursor:pointer;}
 .btn:active{transform:translateY(1px);}
 
 input[type=text],input[type=number],input[type=url],select,textarea{
-  width:100%;font-family:inherit;font-size:16px; /* 16pxにするとiPhoneでズームされない */
-  color:var(--ink);
-  border:2px solid var(--line);border-radius:10px;background:var(--card);
+  width:100%;font-family:inherit;font-size:16px;
+  color:var(--ink); border:2px solid var(--line);border-radius:10px;background:var(--card);
   padding:9px 10px;margin-top:4px;
 }
 textarea{resize:vertical;min-height:44px;}
 label.field{display:block;font-size:12px;color:var(--ink-soft);font-weight:700;margin-top:12px;}
 
-.chip{display:inline-flex;align-items:center;gap:4px;padding:5px 12px;border-radius:99px;font-size:12px;font-weight:700;border:2px solid var(--line);background:var(--card);color:var(--ink-soft);margin:0 6px 6px 0;}
+.chip-row{display:flex; flex-wrap:wrap; margin-bottom:8px;}
+.chip{display:inline-flex;align-items:center;padding:5px 12px;border-radius:99px;font-size:12px;font-weight:700;border:2px solid var(--line);background:var(--card);color:var(--ink-soft);margin:0 6px 6px 0;}
 .chip.active{border-color:var(--ink);color:var(--ink);background:var(--paper);}
 
 .month-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
@@ -87,21 +72,20 @@ label.field{display:block;font-size:12px;color:var(--ink-soft);font-weight:700;m
 .month-nav button{background:none;border:2px solid var(--line);border-radius:99px;padding:4px 12px;font-size:15px;}
 .month-total{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:10px 14px;margin:10px 0 12px;display:flex;justify-content:space-between;align-items:center;}
 .month-total .num{font-size:20px;font-weight:900;color:var(--coin-dark);}
-.weekday-row{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font-size:11px;color:var(--ink-soft);margin-bottom:4px;}
+
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
-.cal-cell{background:var(--card);border:2px solid var(--line);border-radius:10px;min-height:60px;padding:4px 3px;position:relative;display:flex;flex-direction:column;align-items:center;}
-.cal-cell.empty{background:transparent;border:none;}
+.cal-cell{background:var(--card);border:2px solid var(--line);border-radius:10px;min-height:64px;padding:4px 3px;position:relative;display:flex;flex-direction:column;align-items:center;}
 .cal-cell.today{border-color:var(--ink); background: var(--main-soft);}
+.cal-cell.empty{background:transparent;border:none;}
 .cal-cell .datenum{font-size:11px;font-weight:700;color:var(--ink-soft);align-self:flex-start;margin-left:2px;}
-.stamp-row{display:flex;gap:2px;margin-top:3px;flex-wrap:wrap;justify-content:center;}
-.stamp{min-width:15px;height:15px;border-radius:50%;color:#fff;font-size:8px;font-weight:900;display:flex;align-items:center;justify-content:center;line-height:1;transform:rotate(-6deg);padding:0 2px;}
+.stamp-row{display:flex;gap:2px;margin-top:2px;flex-wrap:wrap;justify-content:center;}
+.stamp{min-width:14px;height:14px;border-radius:50%;color:#fff;font-size:8px;font-weight:900;display:flex;align-items:center;justify-content:center;line-height:1;transform:rotate(-6deg);}
 .stamp.breakfast{background:var(--breakfast);}
 .stamp.lunch{background:var(--lunch);}
 .stamp.dinner{background:var(--dinner);}
 
-.search-wrap{position:sticky;top:60px;z-index:2; background: var(--paper); padding-bottom:10px;}
 .recipe-card{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px;}
-.recipe-card .rname{font-size:15px;font-weight:900;margin:0 0 6px;}
+.recipe-card .rname{font-size:15px;font-weight:900;margin:0 0 4px;}
 .badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:99px;margin-right:5px;}
 .badge.main{background:var(--main-soft);color:var(--main);}
 .badge.side{background:var(--side-soft);color:var(--side);}
@@ -110,94 +94,44 @@ label.field{display:block;font-size:12px;color:var(--ink-soft);font-weight:700;m
 .badge.srcbadge{background:#2B2118;color:#fff;}
 .tag-mini{font-size:11px;color:var(--ink-soft);margin-right:6px;}
 
-.fab{
-  position:fixed;
-  bottom: calc(90px + var(--safe-bottom));
-  right:calc((100vw - 480px)/2 + 18px);
-  max-width:480px;
-  background:var(--ink);
-  color:#fff;
-  border:none;
-  border-radius:99px;
-  padding:14px 22px;
-  font-weight:900;
-  font-size:14px;
-  box-shadow:0 6px 14px rgba(0,0,0,.25);
-  z-index:90;
-}
+.fab{position:fixed;bottom:calc(90px + var(--safe-bottom));right:calc((100vw - 480px)/2 + 18px);max-width:480px;background:var(--ink);color:#fff;border:none;border-radius:99px;padding:14px 22px;font-weight:900;font-size:14px;box-shadow:0 6px 14px rgba(0,0,0,.25);z-index:90;}
 @media (max-width:520px){.fab{right:18px;}}
-.empty-msg{text-align:center;color:var(--ink-soft);font-size:13px;padding:30px 10px;}
 
-.jar-wrap{display:flex;flex-direction:column;align-items:center;margin:8px 0 18px;}
-.money-cards{display:flex;gap:10px;margin-bottom:14px;}
-.money-card{flex:1;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:12px;text-align:center;}
-.money-card .label{font-size:11px;color:var(--ink-soft);font-weight:700;}
-.money-card .val{font-size:19px;font-weight:900;color:var(--coin-dark);margin-top:4px;}
-
-.rec-line{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;background:var(--card);border:2px solid var(--line);border-radius:10px;padding:8px 12px;margin-bottom:6px;font-size:13px;}
-.rec-line .meal-tag{font-size:11px;font-weight:900;padding:2px 8px;border-radius:99px;color:#fff;margin-right:6px;white-space:nowrap;}
-.meal-tag.breakfast{background:var(--breakfast);}
-.meal-tag.lunch{background:var(--lunch);}
-.meal-tag.dinner{background:var(--dinner);}
-.date-header{font-size:12px;font-weight:900;color:var(--ink-soft);margin:14px 0 6px;}
-
-.settings-block{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px;}
-.switch-row{display:flex;justify-content:space-between;align-items:center;margin-top:10px;}
-.switch{position:relative;width:42px;height:24px;flex-shrink:0;}
-.switch input{opacity:0;width:0;height:0;}
-.slider{position:absolute;inset:0;background:var(--line);border-radius:99px;transition:.15s;}
-.slider:before{content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.15s;}
-input:checked + .slider{background:var(--main);}
-input:checked + .slider:before{transform:translateX(18px);}
-
-.tabbar{
-  position:fixed;left:0;right:0;bottom:0;
-  max-width:480px;margin:0 auto;
-  display:flex;background:var(--card);
-  border-top:2px solid var(--line);
-  padding: 8px 2px calc(8px + var(--safe-bottom));
-  z-index:100;
-}
+.tabbar{position:fixed;left:0;right:0;bottom:0;max-width:480px;margin:0 auto;display:flex;background:var(--card);border-top:2px solid var(--line);padding: 8px 2px calc(8px + var(--safe-bottom));z-index:100;}
 .tab-btn{flex:1;background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 1px;border-radius:12px;color:var(--ink-soft);}
 .tab-btn.active{color:var(--ink);background:var(--paper);}
 .tab-btn svg{width:22px;height:22px;}
 .tab-label{font-size:10px;font-weight:700;}
 
 .modal-overlay{position:fixed;inset:0;background:rgba(43,33,24,.45);display:flex;align-items:flex-end;justify-content:center;z-index:200;}
-.modal-sheet{
-  background:var(--paper);width:100%;max-width:480px;max-height:90vh;overflow-y:auto;
-  border-radius:20px 20px 0 0;
-  padding:18px 16px calc(30px + var(--safe-bottom));
-  animation:slideup .18s ease-out;
-}
+.modal-sheet{background:var(--paper);width:100%;max-width:480px;max-height:92vh;overflow-y:auto;border-radius:20px 20px 0 0;padding:18px 16px calc(30px + var(--safe-bottom));animation:slideup .18s ease-out;}
 @keyframes slideup{from{transform:translateY(24px);opacity:.4;}to{transform:translateY(0);opacity:1;}}
-.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;position:sticky;top:0;background:var(--paper);padding:4px 0;z-index:5;}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;position:sticky;top:0;background:var(--paper);z-index:5;}
 .modal-head h2{margin:0;font-size:17px;}
 .modal-close{background:none;border:none;font-size:24px;color:var(--ink-soft);padding:4px 8px;}
 
 .meal-block{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px;}
-.meal-block .mb-head{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
-.meal-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+.mb-head{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.meal-dot{width:12px;height:12px;border-radius:50%;}
 .meal-dot.breakfast{background:var(--breakfast);}
 .meal-dot.lunch{background:var(--lunch);}
 .meal-dot.dinner{background:var(--dinner);}
-.dish-line{display:flex;justify-content:space-between;padding:4px 0;font-size:14px;border-bottom:1px dashed var(--line);}
+.dish-line{padding:4px 0;font-size:14px;border-bottom:1px dashed var(--line);}
 .dish-row{display:flex;gap:6px;margin-top:6px;align-items:center;}
-.ing-row{border-bottom:1px dashed var(--line);padding-bottom:8px;margin-bottom:8px;}
+.remove-x{background:none;border:none;color:var(--danger);font-size:20px;font-weight:900;padding:0 4px;}
+
+.ing-row{border-bottom:1px dashed var(--line);padding-bottom:10px;margin-bottom:10px;}
 .ing-line1{display:flex;gap:6px;align-items:center;}
 .ing-line2{display:flex;gap:6px;margin-top:6px;}
-.ing-line2 > *{flex:1;}
-.step-row{display:flex;gap:6px;margin-top:6px;align-items:flex-start;}
-.step-num{font-size:12px;font-weight:900;color:var(--ink-soft);padding-top:12px;width:16px;}
-.remove-x{background:none;border:none;color:var(--danger);font-size:20px;font-weight:900;padding:0 4px;flex-shrink:0;}
 .serving-stepper{display:flex;align-items:center;gap:10px;justify-content:center;margin:10px 0;}
 .serving-stepper button{width:40px;height:40px;border-radius:50%;border:2px solid var(--line);background:var(--card);font-size:18px;font-weight:900;}
-.serving-stepper .snum{font-size:18px;font-weight:900;min-width:70px;text-align:center;}
-.ing-detail-line{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px dashed var(--line);font-size:14px;}
-.step-detail{display:flex;gap:10px;margin-bottom:12px;line-height:1.5;}
-.step-detail .snum2{font-weight:900;color:var(--ink-soft);}
+.snum{font-size:18px;font-weight:900;min-width:70px;text-align:center;}
 .note{font-size:12px;color:var(--ink-soft);line-height:1.6;}
-.fetch-status{font-size:12px;color:var(--main);margin-top:4px;}
+.rec-line{display:flex;justify-content:space-between;background:var(--card);border:2px solid var(--line);border-radius:10px;padding:8px 12px;margin-bottom:6px;font-size:13px;}
+.meal-tag{font-size:10px;font-weight:900;padding:2px 8px;border-radius:99px;color:#fff;margin-right:6px;}
+.meal-tag.breakfast{background:var(--breakfast);}
+.meal-tag.lunch{background:var(--lunch);}
+.meal-tag.dinner{background:var(--dinner);}
 </style>
 </head>
 <body>
@@ -212,94 +146,42 @@ input:checked + .slider:before{transform:translateX(18px);}
   </main>
   <button class="fab" id="fab-add-recipe" style="display:none;">＋ レシピを追加</button>
   <nav class="tabbar">
-    <button class="tab-btn active" data-tab="calendar">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
-      <span class="tab-label">カレンダー</span>
-    </button>
-    <button class="tab-btn" data-tab="recipes">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h11a3 3 0 0 1 3 3v13H7a3 3 0 0 1-3-3V4z"/><path d="M7 8h8M7 12h8"/></svg>
-      <span class="tab-label">レシピ</span>
-    </button>
-    <button class="tab-btn" data-tab="history">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
-      <span class="tab-label">履歴</span>
-    </button>
-    <button class="tab-btn" data-tab="money">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 9.5c0-1.4 1.3-2.5 3-2.5s3 .9 3 2.2c0 2.8-4.2 2-4.2 5 0 1.4 1.2 2.3 2.7 2.3 1.7 0 3-1.1 3-2.5M12 5.5v13"/></svg>
-      <span class="tab-label">おこづかい</span>
-    </button>
-    <button class="tab-btn" data-tab="settings">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
-      <span class="tab-label">設定</span>
-    </button>
+    <button class="tab-btn active" data-tab="calendar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span class="tab-label">カレンダー</span></button>
+    <button class="tab-btn" data-tab="recipes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h11a3 3 0 0 1 3 3v13H7a3 3 0 0 1-3-3V4z"/><path d="M7 8h8M7 12h8"/></svg><span class="tab-label">レシピ</span></button>
+    <button class="tab-btn" data-tab="history"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg><span class="tab-label">履歴</span></button>
+    <button class="tab-btn" data-tab="money"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 9.5c0-1.4 1.3-2.5 3-2.5s3 .9 3 2.2c0 2.8-4.2 2-4.2 5 0 1.4 1.2 2.3 2.7 2.3 1.7 0 3-1.1 3-2.5M12 5.5v13"/></svg><span class="tab-label">おこづかい</span></button>
+    <button class="tab-btn" data-tab="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span class="tab-label">設定</span></button>
   </nav>
   <div id="modal-root"></div>
 </div>
 
 <script>
-/* ---------------- core logic & storage ---------------- */
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,8);
 const MEAL_LABEL = {breakfast:'朝ごはん', lunch:'昼ごはん', dinner:'夕ごはん'};
 const MEAL_STAMP = {breakfast:'朝', lunch:'昼', dinner:'夜'};
-const MEAL_ORDER = {breakfast:0, lunch:1, dinner:2};
 const CATEGORY_LABEL = {main:'メイン', side:'副菜', soup:'汁物', other:'その他'};
-const UNIT_OPTIONS = ['g','kg','ml','l','個','本','枚','束','大さじ','小さじ','カップ','少々'];
+const UNIT_OPTIONS = ['g','kg','ml','l','個','本','枚','束','大さじ','小さじ','カップ','少々','適量'];
 
 let state = {
-  tab:'calendar',
-  month: new Date(),
+  tab:'calendar', month: new Date(),
   settings: {breakfastEarns:false, breakfastPrice:300, lunchPrice:500, dinnerPrice:500, goal:5000},
-  recipes: [],
-  records: {},
-  recipeFilter: {cat:'all', src:'all', q:''},
-  historyQuery: '',
+  recipes: [], records: {},
+  recipeFilter: {cat:'all', q:''}, historyQuery: '',
 };
 
-async function storageGet(key, fallback){
-  try{
-    const val = localStorage.getItem(key);
-    return val ? JSON.parse(val) : fallback;
-  }catch(e){ return fallback; }
-}
-async function storageSet(key, value){
-  try{ localStorage.setItem(key, JSON.stringify(value)); }
-  catch(e){ console.error('save failed', key, e); }
-}
+async function storageGet(k, f){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : f; }catch(e){ return f; } }
+async function storageSet(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){ console.error(e); } }
 
 async function loadAll(){
-  const [settings, recipes, records] = await Promise.all([
-    storageGet('settings', state.settings),
-    storageGet('recipes', []),
-    storageGet('records', {}),
-  ]);
-  state.settings = Object.assign({}, state.settings, settings);
-  state.recipes = recipes;
-  state.records = records;
+  state.settings = await storageGet('settings', state.settings);
+  state.recipes = await storageGet('recipes', []);
+  state.records = await storageGet('records', {});
 }
 
-/* ---------------- helpers ---------------- */
 function ymd(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 function yen(n){ return (n||0).toLocaleString('ja-JP') + '円'; }
 function esc(s){ return (s||'').toString().replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-function priceFor(meal){
-  if(meal==='breakfast') return state.settings.breakfastEarns ? state.settings.breakfastPrice : 0;
-  if(meal==='lunch') return state.settings.lunchPrice;
-  return state.settings.dinnerPrice;
-}
-function scaleAmount(amount, base, servings){
-  const v = amount * (servings/base);
-  return Math.round(v*100)/100;
-}
-function detectSiteLabel(url){
-  try{
-    const host = new URL(url).hostname.replace('www.','');
-    if(host.includes('tiktok')) return 'TikTok';
-    if(host.includes('cookpad')) return 'クックパッド';
-    return host;
-  }catch(e){ return 'サイト'; }
-}
 
-/* ---------------- tabs ---------------- */
 function setTab(tab){
   state.tab = tab;
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
@@ -313,565 +195,300 @@ function setTab(tab){
   if(tab==='settings') renderSettings();
   window.scrollTo(0,0);
 }
-document.querySelectorAll('.tab-btn').forEach(btn=> btn.addEventListener('click', ()=>setTab(btn.dataset.tab)));
-document.getElementById('fab-add-recipe').addEventListener('click', ()=>openRecipeForm(null));
+document.querySelectorAll('.tab-btn').forEach(btn=> btn.onclick = ()=>setTab(btn.dataset.tab));
+document.getElementById('fab-add-recipe').onclick = ()=>openRecipeForm(null);
 
-/* ---------------- modal ---------------- */
-function showModal(html){
-  const root = document.getElementById('modal-root');
-  root.innerHTML = `<div class="modal-overlay" id="modal-overlay"><div class="modal-sheet">${html}</div></div>`;
-  document.getElementById('modal-overlay').addEventListener('click', (e)=>{ if(e.target.id==='modal-overlay') closeModal(); });
-}
+function showModal(html){ document.getElementById('modal-root').innerHTML = `<div class="modal-overlay" id="modal-overlay"><div class="modal-sheet">${html}</div></div>`; document.getElementById('modal-overlay').onclick = (e)=>{ if(e.target.id==='modal-overlay') closeModal(); }; }
 function closeModal(){ document.getElementById('modal-root').innerHTML=''; }
 
-/* ================= CALENDAR ================= */
-function monthRecordsTotal(monthDate){
-  const y = monthDate.getFullYear(), m = monthDate.getMonth();
-  let total = 0;
-  Object.keys(state.records).forEach(dateStr=>{
-    const d = new Date(dateStr+'T00:00:00');
-    if(d.getFullYear()===y && d.getMonth()===m){
-      state.records[dateStr].forEach(r=> total += Number(r.amount)||0);
-    }
-  });
-  return total;
-}
-
+/* --- CALENDAR --- */
 function renderCalendar(){
   const el = document.getElementById('view-calendar');
   const y = state.month.getFullYear(), m = state.month.getMonth();
-  const first = new Date(y,m,1);
-  const startWeekday = first.getDay();
-  const daysInMonth = new Date(y,m+1,0).getDate();
+  const first = new Date(y,m,1).getDay(), last = new Date(y,m+1,0).getDate();
   const today = ymd(new Date());
-  const total = monthRecordsTotal(state.month);
-
   let cells = '';
-  for(let i=0;i<startWeekday;i++) cells += `<div class="cal-cell empty"></div>`;
-  for(let day=1; day<=daysInMonth; day++){
-    const dateStr = y+'-'+String(m+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');
-    const recs = state.records[dateStr] || [];
-    const stamps = ['breakfast','lunch','dinner'].map(meal=>{
-      const rec = recs.find(r=>r.meal===meal);
-      if(!rec) return '';
-      const count = (rec.dishes||[]).length;
-      return `<div class="stamp ${meal}">${MEAL_STAMP[meal]}${count>1?count:''}</div>`;
+  for(let i=0;i<first;i++) cells += `<div class="cal-cell empty"></div>`;
+  for(let d=1; d<=last; d++){
+    const ds = y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    const recs = state.records[ds] || [];
+    const stamps = ['breakfast','lunch','dinner'].map(ml=>{
+      const r = recs.find(x=>x.meal===ml);
+      return r ? `<div class="stamp ${ml}">${MEAL_STAMP[ml]}${r.dishes.length>1?r.dishes.length:''}</div>` : '';
     }).join('');
-    cells += `<div class="cal-cell ${dateStr===today?'today':''}" data-date="${dateStr}">
-      <div class="datenum">${day}</div>
-      <div class="stamp-row">${stamps}</div>
-    </div>`;
+    cells += `<div class="cal-cell ${ds===today?'today':''}" data-date="${ds}"><div class="datenum">${d}</div><div class="stamp-row">${stamps}</div></div>`;
   }
-
   el.innerHTML = `
-    <div class="month-nav">
-      <button id="prev-month">前月</button>
-      <div class="month-label">${y}年 ${m+1}月</div>
-      <button id="next-month">次月</button>
-    </div>
-    <div class="month-total"><span>今の貯金額</span><span class="num">${yen(total)}</span></div>
-    <div class="weekday-row"><div>日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div>土</div></div>
+    <div class="month-nav"><button id="prev-m">前月</button><div class="month-label">${y}年 ${m+1}月</div><button id="next-m">次月</button></div>
+    <div class="month-total"><span>今月の貯金</span><span class="num">${yen(Object.keys(state.records).reduce((t,k)=>{if(k.startsWith(y+'-'+String(m+1).padStart(2,'0')))t+=state.records[k].reduce((st,r)=>st+r.amount,0);return t;},0))}</span></div>
     <div class="cal-grid">${cells}</div>
   `;
-  document.getElementById('prev-month').onclick = ()=>{ state.month = new Date(y,m-1,1); renderCalendar(); };
-  document.getElementById('next-month').onclick = ()=>{ state.month = new Date(y,m+1,1); renderCalendar(); };
-  el.querySelectorAll('.cal-cell[data-date]').forEach(cell=> cell.addEventListener('click', ()=>openDayModal(cell.dataset.date)));
+  document.getElementById('prev-m').onclick=()=>{state.month=new Date(y,m-1,1);renderCalendar();};
+  document.getElementById('next-m').onclick=()=>{state.month=new Date(y,m+1,1);renderCalendar();};
+  el.querySelectorAll('.cal-cell[data-date]').forEach(c=>c.onclick=()=>openDayModal(c.dataset.date));
 }
 
-function openDayModal(dateStr){
-  const recs = state.records[dateStr] || [];
-  const d = new Date(dateStr+'T00:00:00');
-  const label = `${d.getMonth()+1}月${d.getDate()}日`;
-
-  const blocks = ['breakfast','lunch','dinner'].map(meal=>{
-    const rec = recs.find(r=>r.meal===meal);
-    if(rec){
-      const dishLines = (rec.dishes&&rec.dishes.length) ? rec.dishes.map(ds=>{
-        const recipe = ds.recipeId ? state.recipes.find(r=>r.id===ds.recipeId) : null;
-        return `<div class="dish-line"><span>${esc(ds.name)}</span>${recipe?`<span class="tag-mini">${esc(recipe.name)}</span>`:''}</div>`;
-      }).join('') : `<div class="dish-line"><span class="note">(料理名未入力)</span></div>`;
-      return `<div class="meal-block">
-        <div class="mb-head"><span class="meal-dot ${meal}"></span><b>${MEAL_LABEL[meal]}</b></div>
-        ${dishLines}
-        <div style="margin-top:6px;color:var(--coin-dark);font-weight:700;">${yen(rec.amount)}</div>
-        <div style="margin-top:8px;display:flex;gap:8px;">
-          <button class="btn secondary small" data-edit-meal="${meal}">編集</button>
-          <button class="btn danger small" data-del-meal="${meal}">削除</button>
-        </div>
-      </div>`;
-    }
-    return `<div class="meal-block" data-empty-meal="${meal}">
-      <div class="mb-head"><span class="meal-dot ${meal}"></span><b>${MEAL_LABEL[meal]}</b></div>
-      <button class="btn secondary small" data-add-meal="${meal}">＋ 記録する</button>
+function openDayModal(ds){
+  const recs = state.records[ds] || [];
+  const blocks = ['breakfast','lunch','dinner'].map(ml=>{
+    const r = recs.find(x=>x.meal===ml);
+    const content = r ? r.dishes.map(d=>`<div class="dish-line">${esc(d.name)}</div>`).join('') : '<div class="note">未入力（お小遣いのみ記録可）</div>';
+    return `<div class="meal-block">
+      <div class="mb-head"><span class="meal-dot ${ml}"></span><b>${MEAL_LABEL[ml]}</b></div>
+      ${content}
+      <div style="margin-top:8px; display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-weight:900; color:var(--coin-dark);">${r?yen(r.amount):''}</span>
+        <button class="btn secondary small" onclick="openMealForm('${ds}','${ml}',${r?JSON.stringify(r).replace(/"/g,'&quot;'):'null'})">${r?'編集':'記録する'}</button>
+      </div>
     </div>`;
   }).join('');
-
-  showModal(`
-    <div class="modal-head"><h2>${label}の記録</h2><button class="modal-close" id="close-modal">×</button></div>
-    <div id="day-blocks">${blocks}</div>
-  `);
-  document.getElementById('close-modal').onclick = closeModal;
-  document.querySelectorAll('[data-add-meal]').forEach(b=> b.addEventListener('click', ()=> openMealForm(dateStr, b.dataset.addMeal, null)));
-  document.querySelectorAll('[data-edit-meal]').forEach(b=> b.addEventListener('click', ()=> openMealForm(dateStr, b.dataset.editMeal, recs.find(r=>r.meal===b.dataset.editMeal))));
-  document.querySelectorAll('[data-del-meal]').forEach(b=>{
-    b.addEventListener('click', async ()=>{
-      if(!confirm('削除しますか？')) return;
-      state.records[dateStr] = (state.records[dateStr]||[]).filter(r=>r.meal!==b.dataset.delMeal);
-      if(state.records[dateStr].length===0) delete state.records[dateStr];
-      await storageSet('records', state.records);
-      renderCalendar();
-      openDayModal(dateStr);
-    });
-  });
+  showModal(`<div class="modal-head"><h2>${ds.split('-')[1]}月${ds.split('-')[2]}日のごはん</h2><button class="modal-close" onclick="closeModal()">×</button></div>${blocks}`);
 }
 
-let mealFormDishes = [];
-function openMealForm(dateStr, meal, existing){
-  mealFormDishes = existing ? JSON.parse(JSON.stringify(existing.dishes||[])) : [{id:uid(), name:'', recipeId:null}];
-  if(mealFormDishes.length===0) mealFormDishes = [{id:uid(), name:'', recipeId:null}];
+let currentMealDishes = [];
+function openMealForm(ds, meal, r){
+  currentMealDishes = r ? r.dishes : [{name:''}];
+  const recipeDatalist = state.recipes.map(rc=>`<option value="${esc(rc.name)}">`).join('');
+  const renderDishes = () => {
+    document.getElementById('mf-dishes').innerHTML = currentMealDishes.map((d,i)=>`
+      <div class="dish-row">
+        <input type="text" class="dish-input" placeholder="料理名（例：肉じゃが）" list="recipe-list" value="${esc(d.name)}" oninput="currentMealDishes[${i}].name=this.value">
+        ${currentMealDishes.length>1?`<button class="remove-x" onclick="currentMealDishes.splice(${i},1);openMealForm('${ds}','${meal}',{amount:${document.getElementById('mf-amount').value},dishes:currentMealDishes})">×</button>`:''}
+      </div>`).join('');
+  };
+  const amount = r ? r.amount : (meal==='breakfast'?(state.settings.breakfastEarns?state.settings.breakfastPrice:0):meal==='lunch'?state.settings.lunchPrice:state.settings.dinnerPrice);
   
-  const target = document.querySelector(`[data-empty-meal="${meal}"]`) ||
-    Array.from(document.querySelectorAll('.meal-block')).find(elm=>elm.querySelector(`[data-edit-meal="${meal}"]`));
-  if(!target) return;
-
-  const recipeOptions = state.recipes.map(r=>`<option value="${esc(r.name)}"></option>`).join('');
-
-  target.innerHTML = `
-    <div class="mb-head"><span class="meal-dot ${meal}"></span><b>${MEAL_LABEL[meal]}</b></div>
-    <datalist id="recipe-dl">${recipeOptions}</datalist>
-    <label class="field">料理名</label>
+  showModal(`
+    <div class="modal-head"><h2>${MEAL_LABEL[meal]}を記録</h2></div>
+    <datalist id="recipe-list">${recipeDatalist}</datalist>
     <div id="mf-dishes"></div>
-    <button class="btn secondary small" id="mf-add-dish" style="margin-top:6px;">＋ 料理を追加</button>
+    <button class="btn secondary small" style="margin-top:8px;" id="mf-add-dish">＋ 品数を追加</button>
     <label class="field">お小遣い（円）</label>
-    <input type="number" id="mf-amount" value="${existing? existing.amount : priceFor(meal)}">
-    <div style="margin-top:14px;display:flex;gap:8px;">
+    <input type="number" id="mf-amount" value="${amount}">
+    <div style="margin-top:20px; display:flex; gap:8px;">
       <button class="btn block" id="mf-save">保存</button>
-      <button class="btn secondary block" id="mf-cancel">戻る</button>
+      <button class="btn secondary block" onclick="openDayModal('${ds}')">戻る</button>
     </div>
-  `;
-  renderMealFormDishes();
-  document.getElementById('mf-add-dish').onclick = ()=>{ syncMealFormDishes(); mealFormDishes.push({id:uid(), name:'', recipeId:null}); renderMealFormDishes(); };
-  document.getElementById('mf-cancel').onclick = ()=> openDayModal(dateStr);
-  document.getElementById('mf-save').onclick = async ()=>{
-    syncMealFormDishes();
-    const amount = Number(document.getElementById('mf-amount').value)||0;
-    const dishes = mealFormDishes.filter(ds=>ds.name.trim()).map(ds=>{
-      const matched = state.recipes.find(r=>r.name===ds.name.trim());
-      return {id:ds.id, name:ds.name.trim(), recipeId: matched?matched.id:null};
-    });
-    const record = {id: existing?existing.id:uid(), meal, amount, dishes};
-    if(!state.records[dateStr]) state.records[dateStr]=[];
-    state.records[dateStr] = state.records[dateStr].filter(r=>r.meal!==meal);
-    state.records[dateStr].push(record);
+    ${r?`<button class="btn danger small" style="margin-top:16px;" id="mf-del">この食事の記録を消す</button>`:''}
+  `);
+  renderDishes();
+  document.getElementById('mf-add-dish').onclick = () => { currentMealDishes.push({name:''}); renderDishes(); };
+  document.getElementById('mf-save').onclick = async () => {
+    const dishes = currentMealDishes.filter(d=>d.name.trim()!=='');
+    const newRec = { meal, amount: Number(document.getElementById('mf-amount').value), dishes: dishes.length?dishes:[{name:'(料理名なし)'}] };
+    if(!state.records[ds]) state.records[ds] = [];
+    state.records[ds] = state.records[ds].filter(x=>x.meal!==meal);
+    state.records[ds].push(newRec);
     await storageSet('records', state.records);
-    renderCalendar();
-    openDayModal(dateStr);
+    renderCalendar(); openDayModal(ds);
+  };
+  if(r) document.getElementById('mf-del').onclick = async () => {
+    if(confirm('削除しますか？')){
+      state.records[ds] = state.records[ds].filter(x=>x.meal!==meal);
+      await storageSet('records', state.records);
+      renderCalendar(); openDayModal(ds);
+    }
   };
 }
-function syncMealFormDishes(){
-  const rows = document.querySelectorAll('#mf-dishes .dish-row');
-  mealFormDishes = Array.from(rows).map((row,i)=>({
-    id: mealFormDishes[i]?mealFormDishes[i].id:uid(), 
-    name: row.querySelector('.dish-name').value, 
-    recipeId:null
-  }));
-}
-function renderMealFormDishes(){
-  const wrap = document.getElementById('mf-dishes');
-  wrap.innerHTML = mealFormDishes.map((ds,i)=>`
-    <div class="dish-row" data-i="${i}">
-      <input type="text" class="dish-name" list="recipe-dl" placeholder="例：ハンバーグ" value="${esc(ds.name)}" style="flex:1;">
-      <button class="remove-x" data-remove-dish="${i}">×</button>
-    </div>
-  `).join('');
-  wrap.querySelectorAll('[data-remove-dish]').forEach(b=>{
-    b.addEventListener('click', ()=>{
-      syncMealFormDishes();
-      mealFormDishes.splice(Number(b.dataset.removeDish),1);
-      if(mealFormDishes.length===0) mealFormDishes.push({id:uid(), name:'', recipeId:null});
-      renderMealFormDishes();
-    });
-  });
-}
 
-/* ================= RECIPES ================= */
+/* --- RECIPES --- */
 function renderRecipes(){
   const el = document.getElementById('view-recipes');
-  const f = state.recipeFilter;
   const filtered = state.recipes.filter(r=>{
-    if(f.cat!=='all' && r.category!==f.cat) return false;
-    if(f.src!=='all' && r.source!==f.src) return false;
-    if(f.q){
-      const q = f.q.toLowerCase();
-      const hay = (r.name+' '+r.category+' '+(r.tags||[]).join(' ')).toLowerCase();
-      if(!hay.includes(q)) return false;
-    }
-    return true;
+    const q = state.recipeFilter.q.toLowerCase();
+    const matchQ = r.name.toLowerCase().includes(q) || (r.tags||[]).some(t=>t.toLowerCase().includes(q));
+    const matchCat = state.recipeFilter.cat === 'all' || r.category === state.recipeFilter.cat;
+    return matchQ && matchCat;
   });
-
-  const list = filtered.length ? filtered.map(r=>`
-    <div class="recipe-card" data-id="${r.id}">
-      <p class="rname">${esc(r.name)}</p>
-      <span class="badge ${r.category}">${CATEGORY_LABEL[r.category]}</span>
-      ${r.source==='url'?`<span class="badge srcbadge">${esc(r.sourceSite||'Web')}</span>`:''}
-      <div style="margin-top:6px;">${(r.tags||[]).map(t=>`<span class="tag-mini">#${esc(t)}</span>`).join('')}</div>
-    </div>
-  `).join('') : `<div class="empty-msg">レシピがありません。「レシピを追加」から登録してください。</div>`;
-
   el.innerHTML = `
-    <div class="search-wrap">
-      <input type="text" id="recipe-search" placeholder="レシピ名・食材で検索" value="${esc(f.q)}">
-      <div style="margin-top:8px;">
-        ${['all','main','side','soup','other'].map(c=>`<span class="chip ${f.cat===c?'active':''}" data-cat="${c}">${c==='all'?'すべて':CATEGORY_LABEL[c]}</span>`).join('')}
+    <div style="position:sticky; top:60px; background:var(--paper); padding-bottom:10px; z-index:10;">
+      <input type="text" id="recipe-search" placeholder="料理名・食材タグで検索" value="${esc(state.recipeFilter.q)}">
+      <div class="chip-row" style="margin-top:8px;">
+        ${['all','main','side','soup','other'].map(c=>`<span class="chip ${state.recipeFilter.cat===c?'active':''}" onclick="state.recipeFilter.cat='${c}';renderRecipes()">${c==='all'?'すべて':CATEGORY_LABEL[c]}</span>`).join('')}
       </div>
     </div>
-    <div id="recipe-list">${list}</div>
-  `;
-  document.getElementById('recipe-search').addEventListener('input', (e)=>{ state.recipeFilter.q = e.target.value; renderRecipes(); });
-  el.querySelectorAll('[data-cat]').forEach(c=>c.addEventListener('click', ()=>{ state.recipeFilter.cat=c.dataset.cat; renderRecipes(); }));
-  el.querySelectorAll('.recipe-card').forEach(card=> card.addEventListener('click', ()=> openRecipeDetail(card.dataset.id)));
+    <div id="recipe-list">${filtered.map(r=>`
+      <div class="recipe-card" onclick="openRecipeDetail('${r.id}')">
+        <div class="rname">${esc(r.name)}</div>
+        <span class="badge ${r.category}">${CATEGORY_LABEL[r.category]}</span>
+        <div style="margin-top:4px;">${(r.tags||[]).map(t=>`<span class="tag-mini">#${esc(t)}</span>`).join('')}</div>
+      </div>`).join('')}</div>`;
+  document.getElementById('recipe-search').oninput = (e)=>{ state.recipeFilter.q = e.target.value; renderRecipes(); };
 }
 
-let formIngredients = [];
-let formSteps = [];
+let formIngs = [];
+function openRecipeForm(rid){
+  const r = rid ? state.recipes.find(x=>x.id===rid) : null;
+  formIngs = r ? r.ingredients : [{name:'', amt:'', unit:''}];
+  let steps = r ? r.steps : [''];
 
-function openRecipeForm(recipeId){
-  const existing = recipeId ? state.recipes.find(r=>r.id===recipeId) : null;
-  formIngredients = existing ? JSON.parse(JSON.stringify(existing.ingredients)) : [{name:'',amount:'',unit:''}];
-  formSteps = existing ? JSON.parse(JSON.stringify(existing.steps)) : [''];
-  const isUrl = existing && existing.source==='url';
+  const renderSteps = () => {
+    document.getElementById('rf-steps').innerHTML = steps.map((s,i)=>`
+      <div class="dish-row" style="align-items:flex-start;">
+        <span style="font-size:12px; margin-top:14px; width:20px;">${i+1}</span>
+        <textarea oninput="steps[${i}]=this.value">${esc(s)}</textarea>
+        <button class="remove-x" onclick="steps.splice(${i},1);renderSteps()">×</button>
+      </div>`).join('');
+  };
+
+  const renderIngs = () => {
+    document.getElementById('rf-ings').innerHTML = formIngs.map((ing,i)=>`
+      <div class="ing-row">
+        <div class="ing-line1">
+          <input type="text" placeholder="材料名" value="${esc(ing.name)}" oninput="formIngs[${i}].name=this.value" style="flex:1;">
+          <button class="remove-x" onclick="formIngs.splice(${i},1);renderIngs()">×</button>
+        </div>
+        <div class="ing-line2">
+          <input type="text" placeholder="量" value="${esc(ing.amt)}" oninput="formIngs[${i}].amt=this.value">
+          <select onchange="formIngs[${i}].unit=this.value">
+            <option value="">単位</option>
+            ${UNIT_OPTIONS.map(u=>`<option value="${u}" ${ing.unit===u?'selected':''}>${u}</option>`).join('')}
+            <option value="custom">自由入力</option>
+          </select>
+          ${ing.unit==='custom'||(!UNIT_OPTIONS.includes(ing.unit)&&ing.unit!=='')?`<input type="text" placeholder="単位" value="${esc(ing.unit==='custom'?'':ing.unit)}" oninput="formIngs[${i}].unit=this.value">`:''}
+        </div>
+      </div>`).join('');
+  };
 
   showModal(`
-    <div class="modal-head"><h2>${existing?'レシピ編集':'新規レシピ'}</h2><button class="modal-close" id="close-modal">×</button></div>
-
-    <label class="field">保存形式</label>
-    <select id="rf-source">
-      <option value="original" ${!existing||existing.source==='original'?'selected':''}>オリジナル</option>
-      <option value="url" ${isUrl?'selected':''}>Webサイト/TikTokから保存</option>
-    </select>
+    <div class="modal-head"><h2>${r?'レシピ編集':'レシピ追加'}</h2><button class="modal-close" onclick="closeModal()">×</button></div>
+    <label class="field">URL (TikTok/Webなど)</label>
+    <input type="url" id="rf-url" value="${r?esc(r.url):''}" placeholder="https://...">
+    <label class="field">キャプション・説明のメモ</label>
+    <textarea id="rf-caption" placeholder="動画の説明文などを貼り付け">${r?esc(r.caption):''}</textarea>
     
-    <div id="rf-url-wrap" style="display:${isUrl?'block':'none'};">
-      <label class="field">URL</label>
-      <input type="url" id="rf-url" value="${existing?esc(existing.sourceUrl||''):''}" placeholder="https://...">
-      <label class="field">キャプション・メモ（自動取得非対応のため貼り付け推奨）</label>
-      <textarea id="rf-caption" placeholder="動画の材料説明などをコピペ">${existing?esc(existing.capturedText||''):''}</textarea>
-    </div>
-
     <label class="field">レシピ名</label>
-    <input type="text" id="rf-name" value="${existing?esc(existing.name):''}">
-
+    <input type="text" id="rf-name" value="${r?esc(r.name):''}">
+    
     <label class="field">分類</label>
     <select id="rf-cat">
-      ${Object.entries(CATEGORY_LABEL).map(([k,v])=>`<option value="${k}" ${existing&&existing.category===k?'selected':''}>${v}</option>`).join('')}
+      ${Object.entries(CATEGORY_LABEL).map(([k,v])=>`<option value="${k}" ${r&&r.category===k?'selected':''}>${v}</option>`).join('')}
     </select>
-
-    <label class="field">タグ (コンマ区切り)</label>
-    <input type="text" id="rf-tags" value="${existing?esc((existing.tags||[]).join(', ')):''}" placeholder="鶏肉, 玉ねぎ">
-
-    <label class="field">基準の人数</label>
-    <input type="number" id="rf-servings" min="1" value="${existing?existing.baseServings:2}">
-
-    <label class="field">材料</label>
-    <div id="rf-ingredients"></div>
-    <button class="btn secondary small" id="rf-add-ing">＋ 材料追加</button>
-
+    
+    <label class="field">食材タグ (コンマ区切り：牛肉, 野菜など)</label>
+    <input type="text" id="rf-tags" value="${r?esc(r.tags.join(', ')):''}" placeholder="鶏肉, 玉ねぎ">
+    
+    <label class="field">材料 (基準：<input type="number" id="rf-serv" value="${r?r.serv:2}" style="width:50px; display:inline;">人分)</label>
+    <div id="rf-ings"></div>
+    <button class="btn secondary small" onclick="formIngs.push({name:'',amt:'',unit:''});renderIngs()">＋ 材料追加</button>
+    
     <label class="field">作り方</label>
     <div id="rf-steps"></div>
-    <button class="btn secondary small" id="rf-add-step">＋ 手順追加</button>
-
-    <label class="field">自由メモ</label>
-    <textarea id="rf-memo">${existing?esc(existing.memo||''):''}</textarea>
-
-    <div style="margin-top:20px;display:flex;gap:8px;">
+    <button class="btn secondary small" onclick="steps.push('');renderSteps()">＋ 手順追加</button>
+    
+    <div style="margin-top:24px; display:flex; gap:8px;">
       <button class="btn block" id="rf-save">保存</button>
-      <button class="btn secondary block" id="rf-cancel">中止</button>
+      <button class="btn secondary block" onclick="closeModal()">キャンセル</button>
     </div>
-    ${existing?`<button class="btn danger block" id="rf-delete" style="margin-top:10px;">削除</button>`:''}
   `);
-
-  renderFormIngredients();
-  renderFormSteps();
-
-  document.getElementById('close-modal').onclick = closeModal;
-  document.getElementById('rf-cancel').onclick = closeModal;
-  document.getElementById('rf-source').onchange = (e)=>{
-    document.getElementById('rf-url-wrap').style.display = e.target.value==='url' ? 'block' : 'none';
-  };
-  document.getElementById('rf-add-ing').onclick = ()=>{ syncIngredientsFromDom(); formIngredients.push({name:'',amount:'',unit:''}); renderFormIngredients(); };
-  document.getElementById('rf-add-step').onclick = ()=>{ syncStepsFromDom(); formSteps.push(''); renderFormSteps(); };
-
-  if(existing){
-    document.getElementById('rf-delete').onclick = async ()=>{
-      if(!confirm('レシピを削除しますか？')) return;
-      state.recipes = state.recipes.filter(r=>r.id!==existing.id);
-      await storageSet('recipes', state.recipes);
-      closeModal(); renderRecipes();
-    };
-  }
-
-  document.getElementById('rf-save').onclick = async ()=>{
+  renderIngs(); renderSteps();
+  document.getElementById('rf-save').onclick = async () => {
     const name = document.getElementById('rf-name').value.trim();
-    if(!name){ alert('名前を入力してください'); return; }
-    syncIngredientsFromDom();
-    syncStepsFromDom();
-    const source = document.getElementById('rf-source').value;
-    const url = document.getElementById('rf-url').value.trim();
-    const recipe = {
-      id: existing?existing.id:uid(),
-      name,
+    if(!name) return alert('名前を入力してください');
+    const newRecipe = {
+      id: r?r.id:uid(), name, url: document.getElementById('rf-url').value, caption: document.getElementById('rf-caption').value,
       category: document.getElementById('rf-cat').value,
       tags: document.getElementById('rf-tags').value.split(',').map(t=>t.trim()).filter(Boolean),
-      baseServings: Number(document.getElementById('rf-servings').value)||1,
-      source,
-      sourceUrl: url,
-      sourceSite: source==='url' ? detectSiteLabel(url) : '',
-      capturedText: source==='url' ? document.getElementById('rf-caption').value.trim() : '',
-      ingredients: formIngredients.filter(i=>i.name.trim()),
-      steps: formSteps.filter(s=>s.trim()),
-      memo: document.getElementById('rf-memo').value.trim(),
+      serv: Number(document.getElementById('rf-serv').value),
+      ingredients: formIngs.filter(i=>i.name), steps: steps.filter(s=>s.trim())
     };
-    if(existing){ state.recipes = state.recipes.map(r=>r.id===existing.id?recipe:r); }
-    else{ state.recipes.push(recipe); }
+    if(r) state.recipes = state.recipes.map(x=>x.id===r.id?newRecipe:x);
+    else state.recipes.push(newRecipe);
     await storageSet('recipes', state.recipes);
     closeModal(); renderRecipes();
   };
 }
 
-function syncIngredientsFromDom(){
-  const rows = document.querySelectorAll('#rf-ingredients .ing-row');
-  formIngredients = Array.from(rows).map(row=>{
-    const sel = row.querySelector('.ing-unit-select').value;
-    const unit = sel==='__custom__' ? row.querySelector('.ing-unit-custom').value : sel;
-    return { name: row.querySelector('.ing-name').value, amount: row.querySelector('.ing-amount').value, unit };
-  });
-}
-function syncStepsFromDom(){
-  const rows = document.querySelectorAll('#rf-steps .step-row textarea');
-  formSteps = Array.from(rows).map(t=>t.value);
-}
-function renderFormIngredients(){
-  const wrap = document.getElementById('rf-ingredients');
-  wrap.innerHTML = formIngredients.map((ing,i)=>{
-    const isCustom = ing.unit && !UNIT_OPTIONS.includes(ing.unit);
-    return `
-    <div class="ing-row" data-i="${i}">
-      <div class="ing-line1">
-        <input type="text" class="ing-name" placeholder="材料" value="${esc(ing.name)}" style="flex:1;">
-        <button class="remove-x" data-remove-ing="${i}">×</button>
-      </div>
-      <div class="ing-line2">
-        <input type="text" class="ing-amount" placeholder="量" value="${esc(String(ing.amount))}">
-        <select class="ing-unit-select">
-          <option value="">単位</option>
-          ${UNIT_OPTIONS.map(u=>`<option value="${u}" ${ing.unit===u?'selected':''}>${u}</option>`).join('')}
-          <option value="__custom__" ${isCustom?'selected':''}>自由入力</option>
-        </select>
-        <input type="text" class="ing-unit-custom" placeholder="単位" style="display:${isCustom?'block':'none'};" value="${isCustom?esc(ing.unit):''}">
-      </div>
-    </div>`;
-  }).join('');
-  wrap.querySelectorAll('.ing-unit-select').forEach(sel=>{
-    sel.addEventListener('change', (e)=>{
-      const customInput = e.target.parentElement.querySelector('.ing-unit-custom');
-      customInput.style.display = e.target.value==='__custom__' ? 'block' : 'none';
-    });
-  });
-  wrap.querySelectorAll('[data-remove-ing]').forEach(b=>{
-    b.addEventListener('click', ()=>{
-      syncIngredientsFromDom();
-      formIngredients.splice(Number(b.dataset.removeIng),1);
-      renderFormIngredients();
-    });
-  });
-}
-function renderFormSteps(){
-  const wrap = document.getElementById('rf-steps');
-  wrap.innerHTML = formSteps.map((s,i)=>`
-    <div class="step-row" data-i="${i}">
-      <div class="step-num">${i+1}</div>
-      <textarea style="flex:1;">${esc(s)}</textarea>
-      <button class="remove-x" data-remove-step="${i}">×</button>
-    </div>
-  `).join('');
-  wrap.querySelectorAll('[data-remove-step]').forEach(b=>{
-    b.addEventListener('click', ()=>{
-      syncStepsFromDom();
-      formSteps.splice(Number(b.dataset.removeStep),1);
-      renderFormSteps();
-    });
-  });
-}
-
-function openRecipeDetail(id){
-  const r = state.recipes.find(x=>x.id===id);
-  if(!r) return;
-  let servings = r.baseServings;
-  
-  const renderDetailContent = () => {
-    const ingLines = r.ingredients.map(ing=>{
-      const amt = (ing.amount!=='' && !isNaN(Number(ing.amount))) ? scaleAmount(Number(ing.amount), r.baseServings, servings) : ing.amount;
-      return `<div class="ing-detail-line"><span>${esc(ing.name)}</span><span>${amt}${esc(ing.unit)}</span></div>`;
+function openRecipeDetail(rid){
+  const r = state.recipes.find(x=>x.id===rid);
+  let s = r.serv;
+  const renderDetail = () => {
+    const ings = r.ingredients.map(ing=>{
+      const a = !isNaN(ing.amt) ? Math.round((ing.amt*(s/r.serv))*10)/10 : ing.amt;
+      return `<div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px dashed var(--line); font-size:14px;"><span>${esc(ing.name)}</span><span>${a}${esc(ing.unit)}</span></div>`;
     }).join('');
-    const stepLines = r.steps.map((s,i)=>`<div class="step-detail"><span class="snum2">${i+1}.</span><span>${esc(s)}</span></div>`).join('');
-
-    return `
-      <div class="modal-head"><h2>${esc(r.name)}</h2><button class="modal-close" id="close-modal">×</button></div>
-      <div>
-        <span class="badge ${r.category}">${CATEGORY_LABEL[r.category]}</span>
-        ${r.sourceUrl ? `<a href="${esc(r.sourceUrl)}" target="_blank" class="badge srcbadge">元のサイトを開く</a>` : ''}
-      </div>
-
-      <div class="serving-stepper">
-        <button id="serv-minus">－</button>
-        <div class="snum">${servings}人分</div>
-        <button id="serv-plus">＋</button>
-      </div>
-
-      <h3 style="font-size:16px;">材料</h3>
-      ${ingLines || '<p class="note">材料未登録</p>'}
-
-      <h3 style="font-size:16px; margin-top:20px;">作り方</h3>
-      ${stepLines || '<p class="note">手順未登録</p>'}
-
-      ${r.memo ? `<h3 style="font-size:16px; margin-top:20px;">メモ</h3><p class="note">${esc(r.memo)}</p>` : ''}
-      ${r.capturedText ? `<div style="margin-top:20px; padding:10px; background:#eee; border-radius:10px;"><p class="note">${esc(r.capturedText)}</p></div>` : ''}
-
-      <div style="margin-top:24px;display:flex;gap:8px;">
-        <button class="btn block" id="detail-edit">編集</button>
-        <button class="btn secondary block" id="detail-close">閉じる</button>
-      </div>
-    `;
+    showModal(`
+      <div class="modal-head"><h2>${esc(r.name)}</h2><button class="modal-close" onclick="closeModal()">×</button></div>
+      <div class="chip-row">${(r.tags||[]).map(t=>`<span class="tag-mini">#${esc(t)}</span>`).join('')}</div>
+      <div class="serving-stepper"><button onclick="if(s>1)s--;renderDetail()">－</button><div class="snum">${s}人分</div><button onclick="s++;renderDetail()">＋</button></div>
+      <h3 style="font-size:15px; margin-bottom:8px;">材料</h3>${ings}
+      <h3 style="font-size:15px; margin-top:20px; margin-bottom:8px;">作り方</h3>
+      ${r.steps.map((st,i)=>`<div style="display:flex; gap:10px; margin-bottom:10px; font-size:14px;"><span style="color:var(--ink-soft); font-weight:900;">${i+1}.</span><span>${esc(st)}</span></div>`).join('')}
+      ${r.caption?`<div style="margin-top:20px; padding:10px; background:#eee; border-radius:10px; font-size:12px;">${esc(r.caption)}</div>`:''}
+      <div style="margin-top:24px; display:flex; gap:8px;">
+        <button class="btn block" onclick="openRecipeForm('${r.id}')">編集</button>
+        ${r.url?`<a href="${esc(r.url)}" target="_blank" class="btn secondary block" style="text-decoration:none; text-align:center;">元のサイト</a>`:''}
+      </div>`);
   };
-
-  const updateModal = () => {
-    const sheet = document.querySelector('.modal-sheet');
-    if(sheet) {
-      sheet.innerHTML = renderDetailContent();
-      attachEvents();
-    }
-  };
-
-  const attachEvents = () => {
-    document.getElementById('close-modal').onclick = closeModal;
-    document.getElementById('detail-close').onclick = closeModal;
-    document.getElementById('detail-edit').onclick = ()=> openRecipeForm(r.id);
-    document.getElementById('serv-minus').onclick = ()=>{ if(servings>1){ servings--; updateModal(); } };
-    document.getElementById('serv-plus').onclick = ()=>{ servings++; updateModal(); };
-  };
-
-  showModal(renderDetailContent());
-  attachEvents();
+  renderDetail();
 }
 
-/* ================= HISTORY ================= */
+/* --- OTHERS --- */
 function renderHistory(){
   const el = document.getElementById('view-history');
-  let entries = [];
-  Object.keys(state.records).forEach(dateStr=>{
-    state.records[dateStr].forEach(rec=>{
-      entries.push({date:dateStr, ...rec});
-    });
-  });
-  entries.sort((a,b)=> b.date.localeCompare(a.date) || MEAL_ORDER[b.meal]-MEAL_ORDER[a.meal]);
-
+  let items = [];
+  Object.keys(state.records).forEach(ds=>{ state.records[ds].forEach(r=>items.push({ds, ...r})); });
+  items.sort((a,b)=>b.ds.localeCompare(a.ds));
   const q = state.historyQuery.toLowerCase();
-  if(q){
-    entries = entries.filter(e=>{
-      const dishText = e.dishes.map(d=>d.name).join(' ');
-      return dishText.toLowerCase().includes(q) || MEAL_LABEL[e.meal].includes(q);
-    });
-  }
-
-  let lastDate = null;
-  const listHtml = entries.map(e=>{
-    let head = '';
-    if(e.date !== lastDate){
-      const d = new Date(e.date+'T00:00:00');
-      head = `<div class="date-header">${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日</div>`;
-      lastDate = e.date;
-    }
-    const dishText = e.dishes.length ? e.dishes.map(d=>esc(d.name)).join('、') : '(料理名なし)';
-    return head + `<div class="rec-line"><span><span class="meal-tag ${e.meal}">${MEAL_LABEL[e.meal]}</span>${dishText}</span><b>${yen(e.amount)}</b></div>`;
-  }).join('');
-
+  const filtered = items.filter(it=> it.dishes.some(d=>d.name.toLowerCase().includes(q)));
   el.innerHTML = `
-    <input type="text" id="history-search" placeholder="料理名で履歴を検索" value="${esc(state.historyQuery)}">
-    <div style="margin-top:10px;">${listHtml || '<div class="empty-msg">履歴がありません</div>'}</div>
-  `;
-  document.getElementById('history-search').addEventListener('input', (e)=>{
-    state.historyQuery = e.target.value;
-    renderHistory();
-  });
+    <input type="text" id="hist-search" placeholder="料理名で検索" value="${esc(state.historyQuery)}">
+    <div style="margin-top:12px;">${filtered.map(it=>`
+      <div class="rec-line"><span><span class="meal-tag ${it.meal}">${MEAL_STAMP[it.meal]}</span>${it.ds.slice(5)} ${it.dishes.map(d=>esc(d.name)).join(', ')}</span><b>${yen(it.amount)}</b></div>
+    `).join('')}</div>`;
+  document.getElementById('hist-search').oninput=(e)=>{state.historyQuery=e.target.value;renderHistory();};
 }
 
-/* ================= MONEY ================= */
 function renderMoney(){
   const el = document.getElementById('view-money');
-  const monthTotal = monthRecordsTotal(state.month);
-  const goal = state.settings.goal || 1;
-  const pct = Math.min(100, Math.round((monthTotal/goal)*100));
-  const fillHeight = 80 - (pct * 0.7);
-
+  const y = state.month.getFullYear(), m = state.month.getMonth();
+  const monthTotal = Object.keys(state.records).reduce((t,k)=>{if(k.startsWith(y+'-'+String(m+1).padStart(2,'0')))t+=state.records[k].reduce((st,r)=>st+r.amount,0);return t;},0);
+  const pct = Math.min(100, Math.round((monthTotal/state.settings.goal)*100));
   el.innerHTML = `
-    <div class="jar-wrap">
-      <svg width="140" height="130" viewBox="0 0 100 100">
-        <path d="M25 30 L20 90 Q20 96 26 96 L74 96 Q80 96 80 90 L75 30 Z" fill="#fff" stroke="var(--ink)" stroke-width="3"/>
-        <clipPath id="jarclip"><path d="M25 30 L20 90 Q20 96 26 96 L74 96 Q80 96 80 90 L75 30 Z"/></clipPath>
-        <rect x="20" y="${fillHeight}" width="60" height="100" fill="var(--coin)" clip-path="url(#jarclip)"/>
-        <rect x="32" y="20" width="36" height="10" rx="3" fill="#fff" stroke="var(--ink)" stroke-width="3"/>
-        <text x="50" y="65" font-size="12" text-anchor="middle" fill="var(--ink)" font-weight="900" style="font-family:'Zen Maru Gothic'">${pct}%</text>
+    <div style="text-align:center; padding:30px 0;">
+      <svg width="120" height="120" viewBox="0 0 100 100">
+        <path d="M25 30 L20 90 Q20 96 26 96 L74 96 Q80 96 80 90 L75 30 Z" fill="none" stroke="var(--ink)" stroke-width="3"/>
+        <rect x="20" y="${96-(pct*0.66)}" width="60" height="${pct*0.66}" fill="var(--coin)" clip-path="inset(0 0 0 0)"/>
+        <text x="50" y="65" font-size="12" text-anchor="middle" font-weight="900">${pct}%</text>
       </svg>
-      <div class="note" style="margin-top:10px;">今月の目標：${yen(state.settings.goal)}</div>
-    </div>
-    <div class="money-cards">
-      <div class="money-card"><div class="label">今月の貯金</div><div class="val">${yen(monthTotal)}</div></div>
-    </div>
-    <p class="note" style="text-align:center;">自炊を頑張った分だけ貯金が増えていきます！</p>
-  `;
+      <div style="margin-top:10px; font-weight:900; font-size:20px;">${yen(monthTotal)}</div>
+      <div class="note">目標：${yen(state.settings.goal)}</div>
+    </div>`;
 }
 
-/* ================= SETTINGS ================= */
 function renderSettings(){
   const el = document.getElementById('view-settings');
   const s = state.settings;
   el.innerHTML = `
     <div class="settings-block">
-      <h3 style="margin-top:0;">1回あたりのお小遣い</h3>
-      <div class="switch-row">
-        <span>朝ごはんを貯金対象にする</span>
-        <label class="switch"><input type="checkbox" id="st-breakfast-on" ${s.breakfastEarns?'checked':''}><span class="slider"></span></label>
+      <h3>1回あたりのお小遣い</h3>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <span>朝ごはんも貯金する</span>
+        <input type="checkbox" id="st-br-on" ${s.breakfastEarns?'checked':''}>
       </div>
-      <label class="field">朝ごはん（円）</label>
-      <input type="number" id="st-breakfast-price" value="${s.breakfastPrice}">
-      <label class="field">昼ごはん（円）</label>
-      <input type="number" id="st-lunch-price" value="${s.lunchPrice}">
-      <label class="field">夕ごはん（円）</label>
-      <input type="number" id="st-dinner-price" value="${s.dinnerPrice}">
+      <label class="field">朝（円）</label><input type="number" id="st-br-p" value="${s.breakfastPrice}">
+      <label class="field">昼（円）</label><input type="number" id="st-lu-p" value="${s.lunchPrice}">
+      <label class="field">夜（円）</label><input type="number" id="st-di-p" value="${s.dinnerPrice}">
     </div>
     <div class="settings-block">
-      <h3 style="margin-top:0;">今月の目標額</h3>
+      <h3>今月の目標金額</h3>
       <input type="number" id="st-goal" value="${s.goal}">
     </div>
-    <button class="btn block" id="st-save">設定を保存</button>
-  `;
-  document.getElementById('st-save').onclick = async ()=>{
-    state.settings = {
-      breakfastEarns: document.getElementById('st-breakfast-on').checked,
-      breakfastPrice: Number(document.getElementById('st-breakfast-price').value)||0,
-      lunchPrice: Number(document.getElementById('st-lunch-price').value)||0,
-      dinnerPrice: Number(document.getElementById('st-dinner-price').value)||0,
-      goal: Number(document.getElementById('st-goal').value)||0,
-    };
-    await storageSet('settings', state.settings);
-    alert('設定を保存しました');
+    <button class="btn block" onclick="saveSettings()">設定を保存</button>`;
+}
+async function saveSettings(){
+  state.settings = {
+    breakfastEarns: document.getElementById('st-br-on').checked,
+    breakfastPrice: Number(document.getElementById('st-br-p').value),
+    lunchPrice: Number(document.getElementById('st-lu-p').value),
+    dinnerPrice: Number(document.getElementById('st-di-p').value),
+    goal: Number(document.getElementById('st-goal').value),
   };
+  await storageSet('settings', state.settings);
+  alert('保存しました');
 }
 
-/* ---------------- init ---------------- */
-(async function init(){
-  await loadAll();
-  renderCalendar();
-})();
+(async function init(){ await loadAll(); renderCalendar(); })();
 </script>
 </body>
 </html>
