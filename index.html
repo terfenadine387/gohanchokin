@@ -121,6 +121,7 @@ label.field{display:block;font-size:12px;color:var(--ink-soft);font-weight:700;m
 </div>
 
 <script>
+/* アプリ本体の基本設定は前回までと同じ */
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,8);
 const MEAL_LABEL = {breakfast:'朝ごはん', lunch:'昼ごはん', dinner:'夕ごはん'};
 const MEAL_STAMP = {breakfast:'朝', lunch:'昼', dinner:'夜'};
@@ -305,38 +306,33 @@ function renderRecipes(){
     </div>`).join('') : '<div style="text-align:center; padding:40px; color:var(--ink-soft);">レシピが見つかりません</div>';
 }
 
-/* --- TikTok情報取得ロジック --- */
+/* --- TikTok情報取得（自作Vercel API版） --- */
 async function fetchTikTokInfo() {
-  const url = document.getElementById('rf-url').value.trim();
+  const urlInput = document.getElementById('rf-url');
+  const url = urlInput.value.trim();
   const statusEl = document.getElementById('rf-fetch-status');
   if(!url) return;
   
   statusEl.innerText = "取得中...";
   try {
-    // CORSを回避するためのプロキシ経由でTikTokのHTMLを取得
-    const proxyUrl = "https://api.allorigins.win/get?url=" + encodeURIComponent(url);
-    const response = await fetch(proxyUrl);
-    const data = await response.json();
-    const html = data.contents;
-
-    // タイトルと説明文を抽出（metaタグから取得）
-    const doc = new DOMParser().parseFromString(html, 'text/html');
-    const title = doc.querySelector('title')?.innerText || "";
-    const description = doc.querySelector('meta[property="og:description"]')?.content || 
-                        doc.querySelector('meta[name="description"]')?.content || "";
-
-    // レシピ名が空ならタイトルの一部を入れる
-    const nameInput = document.getElementById('rf-name');
-    if(!nameInput.value) {
-      nameInput.value = title.split('|')[0].trim();
-    }
-    // キャプションに説明文を入れる
-    document.getElementById('rf-caption').value = description;
+    // Vercel Serverless Functionを叩く
+    // パスは /api/tiktok?url=...
+    const response = await fetch(`/api/tiktok?url=${encodeURIComponent(url)}`);
+    if (!response.ok) throw new Error('Fetch failed');
     
+    const data = await response.json();
+
+    // 取得したデータを流し込む
+    const nameInput = document.getElementById('rf-name');
+    if(!nameInput.value && data.title) {
+      // タイトルを短く整形（お好みで）
+      nameInput.value = data.title.split(' | ')[0].split(' | ')[0].slice(0, 30);
+    }
+    document.getElementById('rf-caption').value = data.caption || "";
     statusEl.innerText = "取得完了！";
   } catch (e) {
     console.error(e);
-    statusEl.innerText = "自動取得できませんでした。手動で貼り付けてください。";
+    statusEl.innerText = "エラー: 取得できませんでした。";
   }
 }
 
@@ -365,16 +361,16 @@ function openRecipeForm(rid){
     
     <label class="field">参考URL (TikTokなど)</label>
     <div style="display:flex; gap:6px; align-items: flex-end;">
-      <input type="url" id="rf-url" value="${r?esc(r.url):''}" placeholder="https://www.tiktok.com/..." style="flex:1;">
+      <input type="url" id="rf-url" value="${r?esc(r.url):''}" placeholder="https://..." style="flex:1;">
       <button class="btn secondary small" onclick="fetchTikTokInfo()">情報を取得</button>
     </div>
     <div id="rf-fetch-status" style="font-size:10px; color:var(--main); margin-top:4px;"></div>
 
-    <label class="field">キャプション・説明文</label>
-    <textarea id="rf-caption" style="min-height:100px;">${r?esc(r.caption):''}</textarea>
-
     <label class="field">料理の名前</label>
     <input type="text" id="rf-name" value="${r?esc(r.name):''}">
+
+    <label class="field">キャプション・メモ</label>
+    <textarea id="rf-caption" style="min-height:100px;">${r?esc(r.caption):''}</textarea>
     
     <label class="field">分類</label>
     <select id="rf-cat">${Object.entries(CATEGORY_LABEL).map(([k,v])=>`<option value="${k}" ${r&&r.category===k?'selected':''}>${v}</option>`).join('')}</select>
