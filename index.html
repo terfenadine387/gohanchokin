@@ -40,7 +40,7 @@ body{
 }
 h1,h2,h3,.brand,.stamp,.tab-label{font-family:'Zen Maru Gothic',sans-serif;}
 
-/* --- Layout 固定 --- */
+/* --- Layout 固定設定 --- */
 #app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;position:relative;}
 
 .topbar{
@@ -60,13 +60,14 @@ main{
   padding: calc(var(--header-h) + var(--safe-top) + 10px) 14px calc(100px + var(--safe-bottom));
 }
 
-/* --- 検索バー (レシピ表示時のみ出現) --- */
-.search-container{
+/* --- 検索バー固定設定 --- */
+.search-wrap{
   position: sticky; 
   top: calc(var(--header-h) + var(--safe-top)); 
   background: var(--paper); 
   padding: 10px 0; 
   z-index: 900;
+  margin-bottom: 10px;
 }
 
 .view{display:none;}
@@ -87,12 +88,12 @@ input[type=text],input[type=number],input[type=url],select,textarea{
 label.field{display:block;font-size:12px;color:var(--ink-soft);font-weight:700;margin-top:12px;}
 
 .chip-row{display:flex; flex-wrap:wrap; gap:6px; margin-top:8px;}
-.chip{display:inline-flex;padding:5px 12px;border-radius:99px;font-size:11px;font-weight:700;border:2px solid var(--line);background:var(--card);color:var(--ink-soft);cursor:pointer;}
+.chip{display:inline-flex;padding:5px 12px;border-radius:99px;font-size:11px;font-weight:700;border:2px solid var(--line);background:var(--card);color:var(--ink-soft);}
 .chip.active{border-color:var(--ink);color:var(--ink);background:var(--paper);}
 
 /* --- カレンダー --- */
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
-.cal-cell{background:var(--card);border:2px solid var(--line);border-radius:10px;min-height:64px;padding:4px 2px;display:flex;flex-direction:column;align-items:center;}
+.cal-cell{background:var(--card);border:2px solid var(--line);border-radius:10px;min-height:64px;padding:4px 2px;position:relative;display:flex;flex-direction:column;align-items:center;}
 .cal-cell.today{border-color:var(--ink); background: var(--main-soft);}
 .cal-cell.empty{background:transparent;border:none;}
 .cal-cell .datenum{font-size:10px;font-weight:700;color:var(--ink-soft);align-self:flex-start;}
@@ -118,19 +119,23 @@ label.field{display:block;font-size:12px;color:var(--ink-soft);font-weight:700;m
 @media (max-width:520px){.fab{right:18px;}}
 
 .tabbar{position:fixed;left:0;right:0;bottom:0;max-width:480px;margin:0 auto;display:flex;background:var(--card);border-top:2px solid var(--line);padding: 8px 2px calc(8px + var(--safe-bottom));z-index:1000;}
-.tab-btn{flex:1;background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 1px;color:var(--ink-soft);cursor:pointer;}
+.tab-btn{flex:1;background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 1px;color:var(--ink-soft);}
 .tab-btn.active{color:var(--ink); background: var(--paper); border-radius: 12px;}
 .tab-btn svg{width:22px;height:22px;}
 .tab-label{font-size:9px;font-weight:700;}
 
 /* --- モーダル --- */
 .modal-overlay{position:fixed;inset:0;background:rgba(43,33,24,.45);display:flex;align-items:flex-end;justify-content:center;z-index:2000;}
-.modal-sheet{background:var(--paper);width:100%;max-width:480px;max-height:92vh;overflow-y:auto;border-radius:20px 20px 0 0;padding:18px 16px calc(40px + var(--safe-bottom));}
+.modal-sheet{background:var(--paper);width:100%;max-width:480px;max-height:92vh;overflow-y:auto;border-radius:20px 20px 0 0;padding:18px 16px calc(40px + var(--safe-bottom));animation:slideup .18s ease-out;}
+@keyframes slideup{from{transform:translateY(24px);opacity:.4;}to{transform:translateY(0);opacity:1;}}
 .modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;background:var(--paper);position:sticky;top:-18px;z-index:10;padding:10px 0;}
 
 .meal-block{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px;}
 .dish-row{display:flex;gap:6px;margin-top:6px;align-items:center;}
-.remove-x{background:none;border:none;color:var(--danger);font-size:20px;font-weight:900;padding:0 4px;cursor:pointer;}
+.remove-x{background:none;border:none;color:var(--danger);font-size:20px;font-weight:900;padding:0 4px;}
+.serving-stepper{display:flex;align-items:center;gap:10px;justify-content:center;margin:15px 0;}
+.serving-stepper button{width:40px;height:40px;border-radius:50%;border:2px solid var(--line);background:var(--card);font-size:20px;}
+.snum{font-size:18px;font-weight:900;min-width:60px;text-align:center;}
 </style>
 </head>
 <body>
@@ -138,23 +143,12 @@ label.field{display:block;font-size:12px;color:var(--ink-soft);font-weight:700;m
   <header class="topbar"><h1 class="brand">🍚 うちごはん貯金箱</h1></header>
   <main id="main">
     <section id="view-calendar" class="view active"></section>
-    
-    <!-- レシピ画面: 構造を固定してキーボード落ちを防止 -->
-    <section id="view-recipes" class="view">
-      <div class="search-container">
-        <input type="text" id="recipe-search" placeholder="料理名・タグ検索 (#で分類名検索)">
-        <div id="category-chips" class="chip-row"></div>
-      </div>
-      <div id="recipe-list"></div>
-    </section>
-
+    <section id="view-recipes" class="view"></section>
     <section id="view-history" class="view"></section>
     <section id="view-money" class="view"></section>
     <section id="view-settings" class="view"></section>
   </main>
-  
   <button class="fab" id="fab-add-recipe" style="display:none;">＋ レシピを追加</button>
-  
   <nav class="tabbar">
     <button class="tab-btn active" data-tab="calendar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span class="tab-label">カレンダー</span></button>
     <button class="tab-btn" data-tab="recipes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h11a3 3 0 0 1 3 3v13H7a3 3 0 0 1-3-3V4z"/><path d="M7 8h8M7 12h8"/></svg><span class="tab-label">レシピ</span></button>
@@ -176,7 +170,7 @@ let state = {
   tab:'calendar', month: new Date(),
   settings: {breakfastEarns:false, breakfastPrice:300, lunchPrice:500, dinnerPrice:500, goal:5000},
   recipes: [], records: {},
-  recipeFilter: {cat:'all', q:''},
+  recipeFilter: {cat:'all', q:''}, historyQuery: '',
 };
 
 async function storageGet(k, f){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : f; }catch(e){ return f; } }
@@ -191,25 +185,19 @@ async function loadAll(){
 function esc(s){ return (s||'').toString().replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function yen(n){ return (n||0).toLocaleString('ja-JP') + '円'; }
 
-/* --- 画面切り替え --- */
 function setTab(tab){
   state.tab = tab;
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById('view-'+tab).classList.add('active');
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
   document.getElementById('fab-add-recipe').style.display = tab==='recipes' ? 'block' : 'none';
-  
   if(tab==='calendar') renderCalendar();
-  if(tab==='recipes') {
-    initRecipeView(); // 検索バーなどを一度だけセット
-    renderRecipes();  // リストのみ描画
-  }
+  if(tab==='recipes') renderRecipes();
   if(tab==='history') renderHistory();
   if(tab==='money') renderMoney();
   if(tab==='settings') renderSettings();
   window.scrollTo(0,0);
 }
-
 document.querySelectorAll('.tab-btn').forEach(btn=> btn.onclick = ()=>setTab(btn.dataset.tab));
 document.getElementById('fab-add-recipe').onclick = ()=>openRecipeForm(null);
 
@@ -234,12 +222,14 @@ function renderCalendar(){
   }
   el.innerHTML = `
     <div class="month-nav" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-      <button class="btn secondary small" onclick="state.month=new Date(${y},${m}-1,1);renderCalendar()">← 前月</button>
+      <button class="btn secondary small" id="prev-m">← 前月</button>
       <div style="font-weight:900;">${y}年 ${m+1}月</div>
-      <button class="btn secondary small" onclick="state.month=new Date(${y},${m}+1,1);renderCalendar()">次月 →</button>
+      <button class="btn secondary small" id="next-m">次月 →</button>
     </div>
     <div class="cal-grid">${cells}</div>
   `;
+  document.getElementById('prev-m').onclick=()=>{state.month=new Date(y,m-1,1);renderCalendar();};
+  document.getElementById('next-m').onclick=()=>{state.month=new Date(y,m+1,1);renderCalendar();};
 }
 
 function openDayModal(ds){
@@ -248,7 +238,7 @@ function openDayModal(ds){
     const r = recs.find(x=>x.meal===ml);
     const content = r ? r.dishes.map(d=>`<div style="font-size:14px; padding:4px 0; border-bottom:1px dashed var(--line);">${esc(d.name)}</div>`).join('') : '<div style="color:var(--ink-soft); font-size:12px;">未入力</div>';
     return `<div class="meal-block">
-      <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;"><div class="stamp ${ml}">${MEAL_STAMP[ml]}</div><b>${MEAL_LABEL[ml]}</b></div>
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;"><div class="stamp ${ml}" style="transform:none; width:16px; height:16px;">${MEAL_STAMP[ml]}</div><b>${MEAL_LABEL[ml]}</b></div>
       ${content}
       <div style="margin-top:8px; display:flex; justify-content:space-between; align-items:center;">
         <span style="font-weight:900; color:var(--coin-dark);">${r?yen(r.amount):''}</span>
@@ -295,39 +285,14 @@ function openMealForm(ds, meal, r){
   };
 }
 
-/* --- RECIPES (修正の肝) --- */
-function initRecipeView() {
-  const searchInput = document.getElementById('recipe-search');
-  const chipsContainer = document.getElementById('category-chips');
-  
-  // 検索欄のイベント (一度だけ設定)
-  searchInput.oninput = (e) => {
-    state.recipeFilter.q = e.target.value;
-    renderRecipes(); // リストのみ更新
-  };
-
-  // チップスの生成 (一度だけ設定)
-  chipsContainer.innerHTML = ['all','main','side','soup','other'].map(c => 
-    `<div class="chip ${state.recipeFilter.cat===c?'active':''}" data-cat="${c}">${c==='all'?'すべて':CATEGORY_LABEL[c]}</div>`
-  ).join('');
-
-  chipsContainer.querySelectorAll('.chip').forEach(chip => {
-    chip.onclick = () => {
-      state.recipeFilter.cat = chip.dataset.cat;
-      // アクティブ状態の表示更新
-      chipsContainer.querySelectorAll('.chip').forEach(el => el.classList.remove('active'));
-      chip.classList.add('active');
-      renderRecipes();
-    };
-  });
-}
-
+/* --- RECIPES --- */
 function renderRecipes(){
-  const listEl = document.getElementById('recipe-list');
+  const el = document.getElementById('view-recipes');
   const q = state.recipeFilter.q.toLowerCase();
   
-  const filtered = state.recipes.filter(r => {
+  const filtered = state.recipes.filter(r=>{
     let matchQ = false;
+    // 「#」から始まる場合は分類名で検索
     if (q.startsWith('#')) {
       const searchCat = q.slice(1);
       matchQ = CATEGORY_LABEL[r.category].includes(searchCat);
@@ -338,7 +303,137 @@ function renderRecipes(){
     return matchQ && matchCat;
   });
 
-  listEl.innerHTML = filtered.length ? filtered.map(r => `
-    <div class="recipe-card" onclick="openRecipeDetail('${r.id}')">
-      <div class="rname">${esc(r.name)}</div>
-      <span class="badge ${r.category}">${CATEGORY_LABEL[r.c
+  el.innerHTML = `
+    <div class="search-wrap">
+      <input type="text" id="recipe-search" placeholder="料理名・タグ検索 (#で分類検索)" value="${esc(state.recipeFilter.q)}">
+      <div class="chip-row">
+        ${['all','main','side','soup','other'].map(c=>`<div class="chip ${state.recipeFilter.cat===c?'active':''}" onclick="state.recipeFilter.cat='${c}';renderRecipes()">${c==='all'?'すべて':CATEGORY_LABEL[c]}</div>`).join('')}
+      </div>
+    </div>
+    <div id="recipe-list">
+      ${filtered.length ? filtered.map(r=>`
+        <div class="recipe-card" onclick="openRecipeDetail('${r.id}')">
+          <div class="rname">${esc(r.name)}</div>
+          <span class="badge ${r.category}">${CATEGORY_LABEL[r.category]}</span>
+          <div style="margin-top:6px;">${(r.tags||[]).map(t=>`<span class="tag-mini">#${esc(t)}</span>`).join('')}</div>
+        </div>`).join('') : '<div style="text-align:center; padding:40px; color:var(--ink-soft);">レシピが見つかりません</div>'}
+    </div>`;
+
+  const searchInput = document.getElementById('recipe-search');
+  searchInput.focus(); // 検索後にフォーカスを維持
+  searchInput.oninput = (e)=>{ 
+    state.recipeFilter.q = e.target.value; 
+    renderRecipes(); 
+  };
+}
+
+let formIngs = [];
+function openRecipeForm(rid){
+  const r = rid ? state.recipes.find(x=>x.id===rid) : null;
+  formIngs = r ? r.ingredients : [{name:'', amt:'', unit:''}];
+  let steps = r ? r.steps : [''];
+
+  const renderIngs = () => {
+    document.getElementById('rf-ings').innerHTML = formIngs.map((ing,i)=>`
+      <div style="border-bottom:1px dashed var(--line); padding-bottom:8px; margin-bottom:8px;">
+        <div style="display:flex; gap:6px;">
+          <input type="text" placeholder="材料名" value="${esc(ing.name)}" oninput="formIngs[${i}].name=this.value" style="flex:1;">
+          <button class="remove-x" onclick="formIngs.splice(${i},1);renderIngs()">×</button>
+        </div>
+        <div style="display:flex; gap:6px; margin-top:4px;">
+          <input type="text" placeholder="量" value="${esc(ing.amt)}" oninput="formIngs[${i}].amt=this.value" style="flex:1;">
+          <select onchange="formIngs[${i}].unit=this.value" style="flex:1;">
+            <option value="">単位選択</option>
+            ${UNIT_OPTIONS.map(u=>`<option value="${u}" ${ing.unit===u?'selected':''}>${u}</option>`).join('')}
+          </select>
+        </div>
+      </div>`).join('');
+  };
+
+  showModal(`
+    <div class="modal-head"><h2>レシピ登録</h2><button class="modal-close" onclick="closeModal()">×</button></div>
+    <label class="field">レシピの名前</label>
+    <input type="text" id="rf-name" value="${r?esc(r.name):''}">
+    
+    <label class="field">分類</label>
+    <select id="rf-cat">
+      ${Object.entries(CATEGORY_LABEL).map(([k,v])=>`<option value="${k}" ${r&&r.category===k?'selected':''}>${v}</option>`).join('')}
+    </select>
+    
+    <label class="field">材料タグ (検索用：鶏肉, 玉ねぎなど)</label>
+    <input type="text" id="rf-tags" value="${r?esc(r.tags.join(', ')):''}" placeholder="牛肉, キャベツ">
+    
+    <label class="field">URL (TikTokなどの参考リンク)</label>
+    <input type="url" id="rf-url" value="${r?esc(r.url):''}">
+    
+    <label class="field">メモ・動画のキャプション</label>
+    <textarea id="rf-caption" style="min-height:80px;">${r?esc(r.caption):''}</textarea>
+
+    <label class="field">材料リスト</label>
+    <div id="rf-ings"></div>
+    <button class="btn secondary small" onclick="formIngs.push({name:'',amt:'',unit:''});renderIngs()">＋ 材料を追加</button>
+
+    <div style="margin-top:24px; display:flex; gap:8px;">
+      <button class="btn block" id="rf-save">保存</button>
+      <button class="btn secondary block" onclick="closeModal()">キャンセル</button>
+    </div>
+  `);
+  renderIngs();
+  document.getElementById('rf-save').onclick = async () => {
+    const name = document.getElementById('rf-name').value.trim();
+    if(!name) return alert('名前を入れてね');
+    const newRecipe = {
+      id: r?r.id:uid(), name, url: document.getElementById('rf-url').value, caption: document.getElementById('rf-caption').value,
+      category: document.getElementById('rf-cat').value,
+      tags: document.getElementById('rf-tags').value.split(',').map(t=>t.trim()).filter(Boolean),
+      serv: 2, ingredients: formIngs.filter(i=>i.name), steps: []
+    };
+    if(r) state.recipes = state.recipes.map(x=>x.id===r.id?newRecipe:x);
+    else state.recipes.push(newRecipe);
+    await storageSet('recipes', state.recipes);
+    closeModal(); renderRecipes();
+  };
+}
+
+function openRecipeDetail(rid){
+  const r = state.recipes.find(x=>x.id===rid);
+  showModal(`
+    <div class="modal-head"><h2>${esc(r.name)}</h2><button class="modal-close" onclick="closeModal()">×</button></div>
+    <span class="badge ${r.category}">${CATEGORY_LABEL[r.category]}</span>
+    <div style="margin-top:8px;">${(r.tags||[]).map(t=>`<span class="tag-mini">#${esc(t)}</span>`).join('')}</div>
+    <h3 style="font-size:15px; margin-top:20px;">材料</h3>
+    ${r.ingredients.map(ing=>`<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px dashed var(--line); font-size:14px;"><span>${esc(ing.name)}</span><span>${esc(ing.amt)}${esc(ing.unit)}</span></div>`).join('')}
+    ${r.caption?`<div style="margin-top:20px; padding:12px; background:rgba(0,0,0,0.05); border-radius:10px; font-size:13px; line-height:1.6; white-space:pre-wrap;">${esc(r.caption)}</div>`:''}
+    <div style="margin-top:24px; display:flex; gap:8px;">
+      <button class="btn block" onclick="openRecipeForm('${r.id}')">編集</button>
+      ${r.url?`<a href="${esc(r.url)}" target="_blank" class="btn secondary block" style="text-decoration:none; text-align:center;">リンクを開く</a>`:''}
+    </div>`);
+}
+
+/* --- その他 --- */
+function renderHistory(){
+  const el = document.getElementById('view-history');
+  let items = [];
+  Object.keys(state.records).forEach(ds=>{ state.records[ds].forEach(r=>items.push({ds, ...r})); });
+  items.sort((a,b)=>b.ds.localeCompare(a.ds));
+  el.innerHTML = `<h3>履歴</h3><div style="margin-top:12px;">${items.map(it=>`
+    <div class="rec-line"><span><span class="meal-tag ${it.meal}">${MEAL_STAMP[it.meal]}</span>${it.ds} ${it.dishes.map(d=>esc(d.name)).join(', ')}</span><b>${yen(it.amount)}</b></div>
+  `).join('')}</div>`;
+}
+
+function renderMoney(){
+  const el = document.getElementById('view-money');
+  const y = state.month.getFullYear(), m = state.month.getMonth();
+  const monthTotal = Object.keys(state.records).reduce((t,k)=>{if(k.startsWith(y+'-'+String(m+1).padStart(2,'0')))t+=state.records[k].reduce((st,r)=>st+r.amount,0);return t;},0);
+  el.innerHTML = `<div style="text-align:center; padding:40px 0;"><h2 style="font-size:32px;">${yen(monthTotal)}</h2><p style="color:var(--ink-soft);">現在の貯金額</p></div>`;
+}
+
+function renderSettings(){
+  const el = document.getElementById('view-settings');
+  el.innerHTML = `<div class="settings-block"><h3>設定</h3><p>今後のアップデートで追加予定です</p></div>`;
+}
+
+(async function init(){ await loadAll(); setTab('calendar'); })();
+</script>
+</body>
+</html>
