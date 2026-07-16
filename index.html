@@ -6,10 +6,16 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="うちごはん貯金">
+
+<!-- 【重要】iPhoneホーム画面用のアイコン設定 -->
+<!-- 自分の好きな画像を使いたい場合は、このURLをフォルダ内の画像パスに変更してください -->
+<link rel="apple-touch-icon" href="https://via.placeholder.com/180/F7F1E2/2B2118?text=%F0%9F%8D%9A">
+
 <title>うちごはん貯金箱</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
+/* 既存のスタイルは同じなので省略せずにそのまま使用してください */
 :root{
   --paper:#F7F1E2; --paper-dot:#E7DBB9; --card:#FFFDF7; --ink:#2B2118; --ink-soft:#7A6C56; --line:#E4D6AF;
   --breakfast:#D9A441; --lunch:#C9702F; --dinner:#3A4E7A;
@@ -22,39 +28,24 @@
 html,body{margin:0;padding:0;height:100%; overflow-x:hidden;}
 body{ font-family:'Noto Sans JP',sans-serif; color:var(--ink); background: radial-gradient(var(--paper-dot) 1px, transparent 1.2px) 0 0/16px 16px, var(--paper); min-height:100%; }
 h1,h2,h3,.brand,.stamp,.tab-label{font-family:'Zen Maru Gothic',sans-serif;}
-
 #app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;position:relative;}
-
-.topbar{
-  height: calc(var(--header-h) + var(--safe-top)); padding-top: var(--safe-top); padding-left: 16px; padding-right: 16px;
-  display: flex; align-items: center; border-bottom: 2px solid var(--line); background: var(--paper); 
-  position: fixed; top: 0; left: 0; right: 0; z-index: 1000; max-width: 480px; margin: 0 auto;
-}
+.topbar{ height: calc(var(--header-h) + var(--safe-top)); padding-top: var(--safe-top); padding-left: 16px; padding-right: 16px; display: flex; align-items: center; border-bottom: 2px solid var(--line); background: var(--paper); position: fixed; top: 0; left: 0; right: 0; z-index: 1000; max-width: 480px; margin: 0 auto; }
 .brand{margin:0;font-size:19px;font-weight:900;}
-
 main{ flex:1; padding: calc(var(--header-h) + var(--safe-top) + 10px) 14px calc(100px + var(--safe-bottom)); }
-
 .search-container{ position: sticky; top: calc(var(--header-h) + var(--safe-top)); background: var(--paper); padding: 10px 0; z-index: 900; }
 .view{display:none;}
 .view.active{display:block;}
-
 button{font-family:inherit;cursor:pointer;}
 .btn{border:none;border-radius:12px;padding:10px 16px;font-size:14px;font-weight:700;background:var(--ink);color:#fff;}
 .btn.secondary{background:var(--card);color:var(--ink);border:2px solid var(--line);}
 .btn.danger{background:var(--danger);color:#fff;}
 .btn.block{width:100%;}
 .btn.small{padding:6px 10px;font-size:12px;border-radius:9px;}
-
-input[type=text],input[type=number],input[type=url],select,textarea{
-  width:100%;font-family:inherit;font-size:16px; color:var(--ink); border:2px solid var(--line);border-radius:10px;background:var(--card);
-  padding:12px 10px;margin-top:4px;
-}
+input[type=text],input[type=number],input[type=url],select,textarea{ width:100%;font-family:inherit;font-size:16px; color:var(--ink); border:2px solid var(--line);border-radius:10px;background:var(--card); padding:12px 10px;margin-top:4px; }
 label.field{display:block;font-size:12px;color:var(--ink-soft);font-weight:700;margin-top:12px;}
-
 .chip-row{display:flex; flex-wrap:wrap; gap:6px; margin-top:8px;}
 .chip{display:inline-flex;padding:5px 12px;border-radius:99px;font-size:11px;font-weight:700;border:2px solid var(--line);background:var(--card);color:var(--ink-soft);cursor:pointer;}
 .chip.active{border-color:var(--ink);color:var(--ink);background:var(--paper);}
-
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
 .cal-cell{background:var(--card);border:2px solid var(--line);border-radius:10px;min-height:64px;padding:4px 2px;display:flex;flex-direction:column;align-items:center;cursor:pointer;}
 .cal-cell.today{border-color:var(--ink); background: var(--main-soft);}
@@ -65,7 +56,6 @@ label.field{display:block;font-size:12px;color:var(--ink-soft);font-weight:700;m
 .stamp.breakfast{background:var(--breakfast);}
 .stamp.lunch{background:var(--lunch);}
 .stamp.dinner{background:var(--dinner);}
-
 .recipe-card{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px; cursor:pointer;}
 .recipe-card .rname{font-size:16px;font-weight:900;margin:0 0 6px;}
 .badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;margin-right:4px;}
@@ -74,20 +64,16 @@ label.field{display:block;font-size:12px;color:var(--ink-soft);font-weight:700;m
 .badge.soup{background:var(--soup-soft);color:var(--soup);}
 .badge.other{background:var(--other-soft);color:var(--other);}
 .tag-mini{font-size:11px;color:var(--ink-soft);margin-right:6px; background: rgba(0,0,0,0.05); padding: 1px 5px; border-radius: 4px;}
-
 .fab{position:fixed;bottom:calc(90px + var(--safe-bottom));right:calc((100vw - 480px)/2 + 18px);max-width:480px;background:var(--ink);color:#fff;border:none;border-radius:99px;padding:14px 22px;font-weight:900;font-size:14px;box-shadow:0 6px 14px rgba(0,0,0,.25);z-index:1000;}
 @media (max-width:520px){.fab{right:18px;}}
-
 .tabbar{position:fixed;left:0;right:0;bottom:0;max-width:480px;margin:0 auto;display:flex;background:var(--card);border-top:2px solid var(--line);padding: 8px 2px calc(8px + var(--safe-bottom));z-index:1000;}
 .tab-btn{flex:1;background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 1px;color:var(--ink-soft);cursor:pointer;}
 .tab-btn.active{color:var(--ink); background: var(--paper); border-radius: 12px;}
 .tab-btn svg{width:22px;height:22px;}
 .tab-label{font-size:9px;font-weight:700;}
-
 .modal-overlay{position:fixed;inset:0;background:rgba(43,33,24,.45);display:flex;align-items:flex-end;justify-content:center;z-index:2000;}
 .modal-sheet{background:var(--paper);width:100%;max-width:480px;max-height:92vh;overflow-y:auto;border-radius:20px 20px 0 0;padding:18px 16px calc(40px + var(--safe-bottom));}
 .modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;background:var(--paper);position:sticky;top:-18px;z-index:10;padding:10px 0;}
-
 .meal-block{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px;}
 .dish-row{display:flex;gap:6px;margin-top:6px;align-items:center;}
 .remove-x{background:none;border:none;color:var(--danger);font-size:20px;font-weight:900;padding:0 4px;cursor:pointer;}
@@ -121,7 +107,6 @@ label.field{display:block;font-size:12px;color:var(--ink-soft);font-weight:700;m
 </div>
 
 <script>
-/* アプリ本体の基本設定は前回までと同じ */
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,8);
 const MEAL_LABEL = {breakfast:'朝ごはん', lunch:'昼ごはん', dinner:'夕ごはん'};
 const MEAL_STAMP = {breakfast:'朝', lunch:'昼', dinner:'夜'};
@@ -146,7 +131,6 @@ async function loadAll(){
 function esc(s){ return (s||'').toString().replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function yen(n){ return (n||0).toLocaleString('ja-JP') + '円'; }
 
-/* --- 貯金額の計算 --- */
 function calcMonthTotal(year, month) {
   let total = 0;
   const prefix = year + '-' + String(month + 1).padStart(2, '0');
@@ -178,7 +162,6 @@ document.getElementById('fab-add-recipe').onclick = () => openRecipeForm(null);
 function showModal(html){ document.getElementById('modal-root').innerHTML = `<div class="modal-overlay" id="modal-overlay"><div class="modal-sheet">${html}</div></div>`; document.getElementById('modal-overlay').onclick = (e)=>{ if(e.target.id==='modal-overlay') closeModal(); }; }
 function closeModal(){ document.getElementById('modal-root').innerHTML=''; }
 
-/* --- CALENDAR --- */
 function renderCalendar(){
   const el = document.getElementById('view-calendar');
   const y = state.month.getFullYear(), m = state.month.getMonth();
@@ -264,7 +247,6 @@ function openMealForm(ds, meal, r){
   };
 }
 
-/* --- RECIPES --- */
 function initRecipeView() {
   const searchInput = document.getElementById('recipe-search');
   const chipsContainer = document.getElementById('category-chips');
@@ -306,7 +288,7 @@ function renderRecipes(){
     </div>`).join('') : '<div style="text-align:center; padding:40px; color:var(--ink-soft);">レシピが見つかりません</div>';
 }
 
-/* --- TikTok情報取得（自作Vercel API版） --- */
+/* --- 【修正箇所】TikTok情報の取得とフォームへの反映 --- */
 async function fetchTikTokInfo() {
   const urlInput = document.getElementById('rf-url');
   const url = urlInput.value.trim();
@@ -316,19 +298,27 @@ async function fetchTikTokInfo() {
   statusEl.innerText = "取得中...";
   try {
     // Vercel Serverless Functionを叩く
-    // パスは /api/tiktok?url=...
     const response = await fetch(`/api/tiktok?url=${encodeURIComponent(url)}`);
     if (!response.ok) throw new Error('Fetch failed');
     
     const data = await response.json();
 
-    // 取得したデータを流し込む
+    // 取得したデータを各入力欄へ代入
     const nameInput = document.getElementById('rf-name');
+    const captionTextarea = document.getElementById('rf-caption');
+
+    // レシピ名が空、またはTikTok動画のタイトルが入っていない場合に上書き
     if(!nameInput.value && data.title) {
-      // タイトルを短く整形（お好みで）
-      nameInput.value = data.title.split(' | ')[0].split(' | ')[0].slice(0, 30);
+      // タイトルをきれいに整形
+      let cleanName = data.title.split(' | ')[0].split(' | ')[0];
+      nameInput.value = cleanName.trim().slice(0, 40);
     }
-    document.getElementById('rf-caption').value = data.caption || "";
+    
+    // キャプション（説明文）を流し込む
+    if (data.caption) {
+      captionTextarea.value = data.caption;
+    }
+    
     statusEl.innerText = "取得完了！";
   } catch (e) {
     console.error(e);
@@ -369,8 +359,8 @@ function openRecipeForm(rid){
     <label class="field">料理の名前</label>
     <input type="text" id="rf-name" value="${r?esc(r.name):''}">
 
-    <label class="field">キャプション・メモ</label>
-    <textarea id="rf-caption" style="min-height:100px;">${r?esc(r.caption):''}</textarea>
+    <label class="field">説明・キャプション</label>
+    <textarea id="rf-caption" style="min-height:120px;">${r?esc(r.caption):''}</textarea>
     
     <label class="field">分類</label>
     <select id="rf-cat">${Object.entries(CATEGORY_LABEL).map(([k,v])=>`<option value="${k}" ${r&&r.category===k?'selected':''}>${v}</option>`).join('')}</select>
@@ -409,7 +399,6 @@ function openRecipeDetail(rid){
   `);
 }
 
-/* --- その他 --- */
 function renderHistory(){
   const el = document.getElementById('view-history');
   let items = [];
