@@ -5,14 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-<!-- 1. タイトルを GohanChokin に変更 -->
 <meta name="apple-mobile-web-app-title" content="GohanChokin">
 <title>GohanChokin</title>
-
-<!-- 2. アイコン設定 (キャッシュ対策のため末尾に ?v=2 を追加) -->
 <link rel="apple-touch-icon" href="https://via.placeholder.com/180/3F6B4A/ffffff?text=%F0%9F%8D%9A&v=2">
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -28,24 +23,32 @@
 html,body{margin:0;padding:0;height:100%; overflow-x:hidden;}
 body{ font-family:'Noto Sans JP',sans-serif; color:var(--ink); background: radial-gradient(var(--paper-dot) 1px, transparent 1.2px) 0 0/16px 16px, var(--paper); min-height:100%; }
 h1,h2,h3,.brand,.stamp,.tab-label{font-family:'Zen Maru Gothic',sans-serif;}
+
 #app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;position:relative;}
+
 .topbar{ height: calc(var(--header-h) + var(--safe-top)); padding-top: var(--safe-top); padding-left: 16px; padding-right: 16px; display: flex; align-items: center; border-bottom: 2px solid var(--line); background: var(--paper); position: fixed; top: 0; left: 0; right: 0; z-index: 1000; max-width: 480px; margin: 0 auto; }
 .brand{margin:0;font-size:19px;font-weight:900;}
+
 main{ flex:1; padding: calc(var(--header-h) + var(--safe-top) + 10px) 14px calc(100px + var(--safe-bottom)); }
+
 .search-container{ position: sticky; top: calc(var(--header-h) + var(--safe-top)); background: var(--paper); padding: 10px 0; z-index: 900; }
 .view{display:none;}
 .view.active{display:block;}
+
 button{font-family:inherit;cursor:pointer; touch-action: manipulation;}
 .btn{border:none;border-radius:12px;padding:10px 16px;font-size:14px;font-weight:700;background:var(--ink);color:#fff;}
 .btn.secondary{background:var(--card);color:var(--ink);border:2px solid var(--line);}
 .btn.danger{background:var(--danger);color:#fff;}
 .btn.block{width:100%;}
 .btn.small{padding:6px 10px;font-size:12px;border-radius:9px;}
+
 input[type=text],input[type=number],input[type=url],select,textarea{ width:100%;font-family:inherit;font-size:16px; color:var(--ink); border:2px solid var(--line);border-radius:10px;background:var(--card); padding:12px 10px;margin-top:4px; }
 label.field{display:block;font-size:12px;color:var(--ink-soft);font-weight:700;margin-top:12px;}
+
 .chip-row{display:flex; flex-wrap:wrap; gap:6px; margin-top:8px;}
 .chip{display:inline-flex;padding:5px 12px;border-radius:99px;font-size:11px;font-weight:700;border:2px solid var(--line);background:var(--card);color:var(--ink-soft);cursor:pointer;}
 .chip.active{border-color:var(--ink);color:var(--ink);background:var(--paper);}
+
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
 .cal-cell{background:var(--card);border:2px solid var(--line);border-radius:10px;min-height:64px;padding:4px 2px;display:flex;flex-direction:column;align-items:center;cursor:pointer;}
 .cal-cell.today{border-color:var(--ink); background: var(--main-soft);}
@@ -56,6 +59,7 @@ label.field{display:block;font-size:12px;color:var(--ink-soft);font-weight:700;m
 .stamp.breakfast{background:var(--breakfast);}
 .stamp.lunch{background:var(--lunch);}
 .stamp.dinner{background:var(--dinner);}
+
 .recipe-card{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px; cursor:pointer;}
 .recipe-card .rname{font-size:16px;font-weight:900;margin:0 0 6px;}
 .badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;margin-right:4px;}
@@ -64,17 +68,29 @@ label.field{display:block;font-size:12px;color:var(--ink-soft);font-weight:700;m
 .badge.soup{background:var(--soup-soft);color:var(--soup);}
 .badge.other{background:var(--other-soft);color:var(--other);}
 .tag-mini{font-size:11px;color:var(--ink-soft);margin-right:6px; background: rgba(0,0,0,0.05); padding: 1px 5px; border-radius: 4px;}
+
 .fab{position:fixed;bottom:calc(90px + var(--safe-bottom));right:calc((100vw - 480px)/2 + 18px);max-width:480px;background:var(--ink);color:#fff;border:none;border-radius:99px;padding:14px 22px;font-weight:900;font-size:14px;box-shadow:0 6px 14px rgba(0,0,0,.25);z-index:1000;}
 @media (max-width:520px){.fab{right:18px;}}
+
 .tabbar{position:fixed;left:0;right:0;bottom:0;max-width:480px;margin:0 auto;display:flex;background:var(--card);border-top:2px solid var(--line);padding: 8px 2px calc(8px + var(--safe-bottom));z-index:1000;}
 .tab-btn{flex:1;background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 1px;color:var(--ink-soft);cursor:pointer;}
 .tab-btn.active{color:var(--ink); background: var(--paper); border-radius: 12px;}
 .tab-btn svg{width:22px;height:22px;}
 .tab-label{font-size:9px;font-weight:700;}
+
 .modal-overlay{position:fixed;inset:0;background:rgba(43,33,24,.45);display:flex;align-items:flex-end;justify-content:center;z-index:2000;}
 .modal-sheet{background:var(--paper);width:100%;max-width:480px;max-height:92vh;overflow-y:auto;border-radius:20px 20px 0 0;padding:18px 16px calc(40px + var(--safe-bottom));}
 .modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;background:var(--paper);position:sticky;top:-18px;z-index:10;padding:10px 0;}
+
+.meal-block{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px;}
+.dish-row{display:flex;gap:6px;margin-top:6px;align-items:center;}
 .remove-x{background:none;border:none;color:var(--danger);font-size:24px;font-weight:900;padding:0 8px;cursor:pointer;}
+
+/* 写真表示用のスタイル */
+.meal-photo{ width: 100%; height: 120px; object-fit: cover; border-radius: 10px; margin-bottom: 8px; background: #eee; }
+.photo-upload-wrap{ margin: 10px 0; border: 2px dashed var(--line); border-radius: 10px; padding: 15px; text-align: center; background: var(--card); position: relative; }
+.photo-preview{ width: 100%; height: 150px; object-fit: cover; border-radius: 8px; margin-bottom: 8px; }
+#hidden-file-input{ display: none; }
 </style>
 </head>
 <body>
@@ -93,9 +109,7 @@ label.field{display:block;font-size:12px;color:var(--ink-soft);font-weight:700;m
     <section id="view-money" class="view"></section>
     <section id="view-settings" class="view"></section>
   </main>
-  
   <button class="fab" id="fab-add-recipe" style="display:none;">＋ レシピを追加</button>
-  
   <nav class="tabbar">
     <button class="tab-btn active" data-tab="calendar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span class="tab-label">カレンダー</span></button>
     <button class="tab-btn" data-tab="recipes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h11a3 3 0 0 1 3 3v13H7a3 3 0 0 1-3-3V4z"/><path d="M7 8h8M7 12h8"/></svg><span class="tab-label">レシピ</span></button>
@@ -104,6 +118,7 @@ label.field{display:block;font-size:12px;color:var(--ink-soft);font-weight:700;m
     <button class="tab-btn" data-tab="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span class="tab-label">設定</span></button>
   </nav>
   <div id="modal-root"></div>
+  <canvas id="compress-canvas" style="display:none;"></canvas>
 </div>
 
 <script>
@@ -119,8 +134,9 @@ let state = {
   recipes: [], records: {}, recipeFilter: {cat:'all', q:''},
 };
 
+/* ストレージ */
 async function storageGet(k, f){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : f; }catch(e){ return f; } }
-async function storageSet(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){ console.error(e); } }
+async function storageSet(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){ alert("容量不足です。不要な写真を削除してください。"); } }
 
 async function loadAll(){
   state.settings = await storageGet('settings', state.settings);
@@ -138,9 +154,8 @@ function calcMonthTotal(year, month) {
 }
 
 function showModal(html){ 
-  const root = document.getElementById('modal-root');
-  root.innerHTML = `<div class="modal-overlay" id="modal-overlay"><div class="modal-sheet">${html}</div></div>`; 
-  document.getElementById('modal-overlay').addEventListener('click', (e) => { if(e.target.id === 'modal-overlay') closeModal(); });
+  document.getElementById('modal-root').innerHTML = `<div class="modal-overlay" id="modal-overlay"><div class="modal-sheet">${html}</div></div>`; 
+  document.getElementById('modal-overlay').onclick = (e) => { if(e.target.id === 'modal-overlay') closeModal(); };
 }
 function closeModal(){ document.getElementById('modal-root').innerHTML = ''; }
 
@@ -158,7 +173,7 @@ function setTab(tab){
   window.scrollTo(0,0);
 }
 
-/* --- CALENDAR --- */
+/* 1. カレンダー */
 function renderCalendar(){
   const el = document.getElementById('view-calendar');
   const y = state.month.getFullYear(), m = state.month.getMonth();
@@ -174,16 +189,11 @@ function renderCalendar(){
     }).join('');
     cells += `<div class="cal-cell" onclick="openDayModal('${ds}')"><div class="datenum">${d}</div><div class="stamp-row">${stamps}</div></div>`;
   }
-  const monthTotal = calcMonthTotal(y, m);
   el.innerHTML = `
     <div class="month-nav" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
       <button class="btn secondary small" id="cal-prev">← 前月</button>
       <div style="font-weight:900;">${y}年 ${m+1}月</div>
       <button class="btn secondary small" id="cal-next">次月 →</button>
-    </div>
-    <div style="background:var(--card); border:2px solid var(--line); border-radius:14px; padding:10px 14px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
-      <span style="font-size:12px; font-weight:700;">今月の貯金</span>
-      <span style="font-size:20px; font-weight:900; color:var(--coin-dark);">${yen(monthTotal)}</span>
     </div>
     <div class="cal-grid">${cells}</div>
   `;
@@ -196,8 +206,10 @@ function openDayModal(ds){
   const blocks = ['breakfast','lunch','dinner'].map(ml=>{
     const r = recs.find(x=>x.meal===ml);
     const content = r ? r.dishes.map(d=>`<div style="font-size:14px; padding:4px 0; border-bottom:1px dashed var(--line);">${esc(d.name)}</div>`).join('') : '<div style="color:var(--ink-soft); font-size:12px;">未入力</div>';
+    const photoImg = (r && r.photo) ? `<img src="${r.photo}" class="meal-photo">` : '';
     return `<div class="meal-block">
       <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;"><div class="stamp ${ml}">${MEAL_STAMP[ml]}</div><b>${MEAL_LABEL[ml]}</b></div>
+      ${photoImg}
       ${content}
       <div style="margin-top:8px; display:flex; justify-content:space-between; align-items:center;">
         <span style="font-weight:900; color:var(--coin-dark);">${r?yen(r.amount):''}</span>
@@ -208,44 +220,92 @@ function openDayModal(ds){
   showModal(`<div class="modal-head"><h2>${ds}</h2><button class="modal-close" onclick="closeModal()">×</button></div>${blocks}`);
 }
 
+/* 2. 入力フォーム & 写真処理 */
 let currentMealDishes = [];
+let currentPhotoBase64 = null;
+
 function openMealForm(ds, meal, r){
   currentMealDishes = r ? JSON.parse(JSON.stringify(r.dishes)) : [{name:''}];
-  const renderMealRows = () => {
-    document.getElementById('mf-dishes').innerHTML = currentMealDishes.map((d,i)=>`
-      <div class="dish-row" style="display:flex; gap:6px; align-items:center; margin-top:6px;">
-        <input type="text" class="dish-input" placeholder="料理名" value="${esc(d.name)}" oninput="currentMealDishes[${i}].name=this.value" style="flex:1;">
-        <button class="remove-x" onclick="currentMealDishes.splice(${i},1); openMealFormSync('${ds}','${meal}')">×</button>
-      </div>`).join('');
-  };
-  showModal(`
-    <div class="modal-head"><h2>${MEAL_LABEL[meal]}を入力</h2></div>
-    <div id="mf-dishes"></div>
-    <button class="btn secondary small" id="btn-mf-add" style="margin-top:10px;">＋ 品数を追加</button>
-    <label class="field">お小遣い（円）</label>
-    <input type="number" id="mf-amount" value="${r?r.amount:300}">
-    <div style="margin-top:24px; display:flex; gap:8px;">
-      <button class="btn block" id="btn-mf-save">保存</button>
-      <button class="btn secondary block" onclick="openDayModal('${ds}')">戻る</button>
-    </div>
-  `);
-  renderMealRows();
-  document.getElementById('btn-mf-add').onclick = () => { currentMealDishes.push({name:''}); renderMealRows(); };
-  document.getElementById('btn-mf-save').onclick = async () => {
-    const dishes = currentMealDishes.filter(d=>d.name.trim()!=='');
-    const newRec = { meal, amount: Number(document.getElementById('mf-amount').value), dishes: dishes.length?dishes:[{name:'(料理名なし)'}] };
-    if(!state.records[ds]) state.records[ds] = [];
-    state.records[ds] = state.records[ds].filter(x=>x.meal!==meal);
-    state.records[ds].push(newRec);
-    await storageSet('records', state.records); renderCalendar(); openDayModal(ds);
-  };
-}
-window.openMealFormSync = (ds, ml) => {
-  if(currentMealDishes.length===0) currentMealDishes = [{name:''}];
-  openMealForm(ds, ml, {amount: document.getElementById('mf-amount').value, dishes: currentMealDishes});
-};
+  currentPhotoBase64 = r ? r.photo : null;
 
-/* --- RECIPES --- */
+  const renderFormContent = () => {
+    const dishesHtml = currentMealDishes.map((d,i)=>`
+      <div class="dish-row">
+        <input type="text" class="dish-input" placeholder="料理名" value="${esc(d.name)}" oninput="currentMealDishes[${i}].name=this.value">
+        <button class="remove-x" onclick="currentMealDishes.splice(${i},1); updateFormUI()">×</button>
+      </div>`).join('');
+
+    const photoHtml = currentPhotoBase64 
+      ? `<img src="${currentPhotoBase64}" class="photo-preview"><button class="btn danger small block" onclick="currentPhotoBase64=null; updateFormUI()">写真を消す</button>`
+      : `<span>📷 写真を撮る / 選ぶ</span><input type="file" id="hidden-file-input" accept="image/*" onchange="handlePhoto(event)">`;
+
+    showModal(`
+      <div class="modal-head"><h2>${MEAL_LABEL[meal]}を入力</h2></div>
+      
+      <div class="photo-upload-wrap" onclick="if(!currentPhotoBase64)document.getElementById('hidden-file-input').click()">
+        ${photoHtml}
+      </div>
+
+      <div id="mf-dishes">${dishesHtml}</div>
+      <button class="btn secondary small" id="btn-mf-add" style="margin-top:10px;">＋ 品数を追加</button>
+      
+      <label class="field">お小遣い（円）</label>
+      <input type="number" id="mf-amount" value="${r?r.amount:300}">
+      
+      <div style="margin-top:24px; display:flex; gap:8px;">
+        <button class="btn block" id="btn-mf-save">保存</button>
+        <button class="btn secondary block" onclick="openDayModal('${ds}')">戻る</button>
+      </div>
+    `);
+    
+    document.getElementById('btn-mf-add').onclick = () => { currentMealDishes.push({name:''}); updateFormUI(); };
+    document.getElementById('btn-mf-save').onclick = async () => {
+      const dishes = currentMealDishes.filter(d=>d.name.trim()!=='');
+      const amt = Number(document.getElementById('mf-amount').value);
+      const newRec = { meal, amount: amt, dishes: dishes.length?dishes:[{name:'(料理名なし)'}], photo: currentPhotoBase64 };
+      if(!state.records[ds]) state.records[ds] = [];
+      state.records[ds] = state.records[ds].filter(x=>x.meal!==meal);
+      state.records[ds].push(newRec);
+      await storageSet('records', state.records);
+      renderCalendar(); openDayModal(ds);
+    };
+  };
+
+  // UIを一部更新するための関数
+  window.updateFormUI = () => { renderFormContent(); };
+  renderFormContent();
+}
+
+/* 写真の超圧縮処理 */
+async function handlePhoto(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.getElementById('compress-canvas');
+      const ctx = canvas.getContext('2d');
+      
+      // 最大幅を250pxに抑える (これで容量を稼ぐ)
+      const maxWidth = 250;
+      const scale = maxWidth / img.width;
+      canvas.width = maxWidth;
+      canvas.height = img.height * scale;
+      
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      
+      // JPEG形式で、画質を0.5まで落とす（これで数KBになる）
+      currentPhotoBase64 = canvas.toDataURL('image/jpeg', 0.5);
+      updateFormUI();
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+/* 3. レシピ関連 */
 function initRecipeView() {
   const searchInput = document.getElementById('recipe-search');
   const chipsContainer = document.getElementById('category-chips');
@@ -269,7 +329,6 @@ function renderRecipes(){
     </div>`).join('') || '<div style="text-align:center; padding:40px; color:var(--ink-soft);">レシピがありません</div>';
 }
 
-/* 取得機能の改善版 */
 async function fetchTikTokInfo() {
   const url = document.getElementById('rf-url').value.trim();
   const statusEl = document.getElementById('rf-fetch-status');
@@ -294,35 +353,36 @@ function openRecipeForm(rid){
   const renderIngList = () => {
     document.getElementById('rf-ings-list').innerHTML = formIngs.map((ing, i) => `
       <div style="border-bottom:1px dashed var(--line); padding-bottom:8px; margin-bottom:8px;">
-        <div style="display:flex; gap:6px; align-items:center;"><input type="text" placeholder="材料名" value="${esc(ing.name)}" oninput="formIngs[${i}].name=this.value" style="flex:1;"><button class="remove-x" onclick="formIngs.splice(${i},1); renderIngListSync()">×</button></div>
+        <div style="display:flex; gap:6px; align-items:center;"><input type="text" placeholder="材料名" value="${esc(ing.name)}" oninput="formIngs[${i}].name=this.value" style="flex:1;"><button class="remove-x" onclick="formIngs.splice(${i},1); updateRecipeFormUI()">×</button></div>
         <div style="display:flex; gap:6px; margin-top:4px;"><input type="text" placeholder="量" value="${esc(ing.amt)}" oninput="formIngs[${i}].amt=this.value" style="flex:1;"><select onchange="formIngs[${i}].unit=this.value" style="flex:1;"><option value="">単位</option>${UNIT_OPTIONS.map(u=>`<option value="${u}" ${ing.unit===u?'selected':''}>${u}</option>`).join('')}</select></div>
       </div>`).join('');
   };
+
+  window.updateRecipeFormUI = () => renderIngList();
+
   showModal(`
     <div class="modal-head"><h2>レシピ登録</h2><button class="modal-close" onclick="closeModal()">×</button></div>
-    <label class="field">参考URL (TikTokなど)</label>
-    <div style="display:flex; gap:6px; align-items: flex-end;"><input type="url" id="rf-url" value="${r?esc(r.url):''}" style="flex:1;"><button class="btn secondary small" id="btn-rf-fetch">情報取得</button></div>
+    <label class="field">参考URL</label>
+    <div style="display:flex; gap:6px; align-items: flex-end;"><input type="url" id="rf-url" value="${r?esc(r.url):''}" style="flex:1;"><button class="btn secondary small" id="btn-rf-fetch">取得</button></div>
     <div id="rf-fetch-status" style="font-size:10px; color:var(--main); margin-top:4px;"></div>
     <label class="field">料理名</label><input type="text" id="rf-name" value="${r?esc(r.name):''}">
-    <label class="field">説明・メモ</label><textarea id="rf-caption" style="min-height:100px;">${r?esc(r.caption):''}</textarea>
+    <label class="field">説明</label><textarea id="rf-caption" style="min-height:100px;">${r?esc(r.caption):''}</textarea>
     <label class="field">分類</label><select id="rf-cat">${Object.entries(CATEGORY_LABEL).map(([k,v])=>`<option value="${k}" ${r&&r.category===k?'selected':''}>${v}</option>`).join('')}</select>
     <label class="field">材料リスト</label><div id="rf-ings-list"></div><button class="btn secondary small" id="btn-rf-add-ing">＋ 材料を追加</button>
-    <label class="field">タグ (牛肉, 野菜など)</label><input type="text" id="rf-tags" value="${r?esc(r.tags.join(', ')):''}">
-    <div style="margin-top:24px; display:flex; gap:8px;"><button class="btn block" id="btn-rf-save">保存</button><button class="btn secondary block" onclick="closeModal()">中止</button></div>
+    <label class="field">タグ</label><input type="text" id="rf-tags" value="${r?esc(r.tags.join(', ')):''}">
+    <div style="margin-top:24px; display:flex; gap:8px;"><button class="btn block" id="btn-rf-save">保存</button></div>
   `);
   renderIngList();
   document.getElementById('btn-rf-add-ing').onclick = () => { formIngs.push({name:'', amt:'', unit:''}); renderIngList(); };
   document.getElementById('btn-rf-fetch').onclick = fetchTikTokInfo;
   document.getElementById('btn-rf-save').onclick = async () => {
     const name = document.getElementById('rf-name').value.trim();
-    if(!name) return alert('名前を入れてください');
+    if(!name) return alert('名前を入れてね');
     const newR = { id: r?r.id:uid(), name, url: document.getElementById('rf-url').value, caption: document.getElementById('rf-caption').value, category: document.getElementById('rf-cat').value, tags: document.getElementById('rf-tags').value.split(',').map(t=>t.trim()).filter(Boolean), ingredients: formIngs.filter(i=>i.name) };
     if(r) state.recipes = state.recipes.map(x=>x.id===r.id?newR:x); else state.recipes.push(newR);
     await storageSet('recipes', state.recipes); closeModal(); renderRecipes();
   };
 }
-window.renderIngListSync = () => { if(formIngs.length===0) formIngs=[{name:'',amt:'',unit:''}]; renderRecipeFormSync(); };
-window.renderRecipeFormSync = () => { openRecipeForm(null); }; // 簡易版同期
 
 function openRecipeDetail(rid){
   const r = state.recipes.find(x=>x.id===rid);
@@ -333,19 +393,24 @@ function openRecipeDetail(rid){
     <h3 style="font-size:15px; margin-top:20px;">材料</h3>
     ${r.ingredients.map(ing=>`<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px dashed var(--line); font-size:14px;"><span>${esc(ing.name)}</span><span>${esc(ing.amt)}${esc(ing.unit)}</span></div>`).join('')}
     ${r.caption?`<div style="margin-top:20px; padding:12px; background:rgba(0,0,0,0.05); border-radius:10px; font-size:13px; white-space:pre-wrap;">${esc(r.caption)}</div>`:''}
-    <div style="margin-top:24px; display:flex; gap:8px;"><button class="btn block" onclick="openRecipeForm('${r.id}')">編集</button>${r.url?`<a href="${esc(r.url)}" target="_blank" class="btn secondary block" style="text-decoration:none; text-align:center;">動画</a>`:''}</div>
+    <div style="margin-top:24px; display:flex; gap:8px;"><button class="btn block" onclick="openRecipeForm('${r.id}')">編集</button></div>
   `);
 }
 
+/* 4. その他 */
 function renderHistory(){
   const el = document.getElementById('view-history');
   let items = [];
   for(let ds in state.records) { state.records[ds].forEach(r=>items.push({ds, ...r})); }
   items.sort((a,b)=>b.ds.localeCompare(a.ds));
   el.innerHTML = `<h3>履歴</h3><div style="margin-top:12px;">${items.map(it=>`
-    <div style="background:#fff; border:2px solid var(--line); border-radius:10px; padding:10px; margin-bottom:8px; display:flex; justify-content:space-between;">
-      <span style="font-size:13px;"><span class="stamp ${it.meal}" style="display:inline-flex; transform:none; margin-right:6px;">${MEAL_STAMP[it.meal]}</span>${it.ds} ${it.dishes.map(d=>esc(d.name)).join(', ')}</span>
-      <b style="font-size:13px;">${yen(it.amount)}</b>
+    <div style="background:#fff; border:2px solid var(--line); border-radius:10px; padding:10px; margin-bottom:8px;">
+      <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+        <span style="font-size:13px;"><span class="stamp ${it.meal}" style="display:inline-flex; transform:none; margin-right:6px;">${MEAL_STAMP[it.meal]}</span>${it.ds}</span>
+        <b>${yen(it.amount)}</b>
+      </div>
+      ${it.photo ? `<img src="${it.photo}" style="width:100%; height:80px; object-fit:cover; border-radius:6px; margin-bottom:6px;">` : ''}
+      <div style="font-size:13px;">${it.dishes.map(d=>esc(d.name)).join(', ')}</div>
     </div>`).join('')}</div>`;
 }
 
@@ -353,13 +418,15 @@ function renderMoney(){
   const el = document.getElementById('view-money');
   el.innerHTML = `<div style="text-align:center; padding:40px 0;"><h2 style="font-size:32px;">${yen(calcMonthTotal(state.month.getFullYear(), state.month.getMonth()))}</h2><p style="color:var(--ink-soft);">今月の貯金</p></div>`;
 }
+
 function renderSettings(){
-  document.getElementById('view-settings').innerHTML = `<div class="settings-block"><h3>設定</h3><button class="btn danger block" onclick="if(confirm('リセットしますか？')) {localStorage.clear(); location.reload();}">全データ削除</button></div>`;
+  document.getElementById('view-settings').innerHTML = `<div class="settings-block"><h3>管理</h3><button class="btn danger block" onclick="if(confirm('リセットしますか？')) {localStorage.clear(); location.reload();}">全データ削除</button></div>`;
 }
 
+/* 初期化 */
 (async function init(){ 
   document.querySelectorAll('.tab-btn').forEach(btn => btn.onclick = () => setTab(btn.dataset.tab));
-  document.getElementById('fab-add-recipe').onclick = () => openRecipeForm(null); // ← ここで確実に登録
+  document.getElementById('fab-add-recipe').onclick = () => openRecipeForm(null);
   try { await loadAll(); setTab('calendar'); } catch(e) { console.error(e); } 
 })();
 </script>
