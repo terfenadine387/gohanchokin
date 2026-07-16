@@ -28,9 +28,10 @@
   --danger:#B3452C;
   --safe-top: env(safe-area-inset-top);
   --safe-bottom: env(safe-area-inset-bottom);
+  --header-h: 60px;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-html,body{margin:0;padding:0;height:100%;}
+html,body{margin:0;padding:0;height:100%; overflow-x:hidden;}
 body{
   font-family:'Noto Sans JP',sans-serif;
   color:var(--ink);
@@ -38,12 +39,37 @@ body{
   min-height:100%;
 }
 h1,h2,h3,.brand,.stamp,.tab-label{font-family:'Zen Maru Gothic',sans-serif;}
+
+/* --- Layout 固定設定 --- */
 #app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;position:relative;}
 
-.topbar{padding: calc(var(--safe-top) + 14px) 16px 10px; border-bottom: 2px solid var(--line); background: var(--paper); position: sticky; top: 0; z-index: 100;}
+.topbar{
+  height: calc(var(--header-h) + var(--safe-top));
+  padding-top: var(--safe-top);
+  padding-left: 16px; padding-right: 16px;
+  display: flex; align-items: center;
+  border-bottom: 2px solid var(--line); 
+  background: var(--paper); 
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  max-width: 480px; margin: 0 auto;
+}
 .brand{margin:0;font-size:19px;font-weight:900;}
 
-main{flex:1;padding:14px 14px calc(100px + var(--safe-bottom));overflow-x:hidden;}
+main{
+  flex:1;
+  padding: calc(var(--header-h) + var(--safe-top) + 10px) 14px calc(100px + var(--safe-bottom));
+}
+
+/* --- 検索バー固定設定 --- */
+.search-wrap{
+  position: sticky; 
+  top: calc(var(--header-h) + var(--safe-top)); 
+  background: var(--paper); 
+  padding: 10px 0; 
+  z-index: 900;
+  margin-bottom: 10px;
+}
+
 .view{display:none;}
 .view.active{display:block;}
 
@@ -53,85 +79,63 @@ button{font-family:inherit;cursor:pointer;}
 .btn.danger{background:var(--danger);color:#fff;}
 .btn.block{width:100%;}
 .btn.small{padding:6px 10px;font-size:12px;border-radius:9px;}
-.btn:active{transform:translateY(1px);}
 
 input[type=text],input[type=number],input[type=url],select,textarea{
   width:100%;font-family:inherit;font-size:16px;
   color:var(--ink); border:2px solid var(--line);border-radius:10px;background:var(--card);
-  padding:9px 10px;margin-top:4px;
+  padding:12px 10px;margin-top:4px;
 }
-textarea{resize:vertical;min-height:44px;}
 label.field{display:block;font-size:12px;color:var(--ink-soft);font-weight:700;margin-top:12px;}
 
-.chip-row{display:flex; flex-wrap:wrap; margin-bottom:8px;}
-.chip{display:inline-flex;align-items:center;padding:5px 12px;border-radius:99px;font-size:12px;font-weight:700;border:2px solid var(--line);background:var(--card);color:var(--ink-soft);margin:0 6px 6px 0;}
+.chip-row{display:flex; flex-wrap:wrap; gap:6px; margin-top:8px;}
+.chip{display:inline-flex;padding:5px 12px;border-radius:99px;font-size:11px;font-weight:700;border:2px solid var(--line);background:var(--card);color:var(--ink-soft);}
 .chip.active{border-color:var(--ink);color:var(--ink);background:var(--paper);}
 
-.month-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
-.month-nav .month-label{font-size:17px;font-weight:900;}
-.month-nav button{background:none;border:2px solid var(--line);border-radius:99px;padding:4px 12px;font-size:15px;}
-.month-total{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:10px 14px;margin:10px 0 12px;display:flex;justify-content:space-between;align-items:center;}
-.month-total .num{font-size:20px;font-weight:900;color:var(--coin-dark);}
-
+/* --- カレンダー --- */
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
-.cal-cell{background:var(--card);border:2px solid var(--line);border-radius:10px;min-height:64px;padding:4px 3px;position:relative;display:flex;flex-direction:column;align-items:center;}
+.cal-cell{background:var(--card);border:2px solid var(--line);border-radius:10px;min-height:64px;padding:4px 2px;position:relative;display:flex;flex-direction:column;align-items:center;}
 .cal-cell.today{border-color:var(--ink); background: var(--main-soft);}
 .cal-cell.empty{background:transparent;border:none;}
-.cal-cell .datenum{font-size:11px;font-weight:700;color:var(--ink-soft);align-self:flex-start;margin-left:2px;}
-.stamp-row{display:flex;gap:2px;margin-top:2px;flex-wrap:wrap;justify-content:center;}
-.stamp{min-width:14px;height:14px;border-radius:50%;color:#fff;font-size:8px;font-weight:900;display:flex;align-items:center;justify-content:center;line-height:1;transform:rotate(-6deg);}
+.cal-cell .datenum{font-size:10px;font-weight:700;color:var(--ink-soft);align-self:flex-start;}
+.stamp-row{display:flex;gap:1px;margin-top:2px;flex-wrap:wrap;justify-content:center;}
+.stamp{min-width:13px;height:13px;border-radius:50%;color:#fff;font-size:8px;font-weight:900;display:flex;align-items:center;justify-content:center;}
 .stamp.breakfast{background:var(--breakfast);}
 .stamp.lunch{background:var(--lunch);}
 .stamp.dinner{background:var(--dinner);}
 
-.recipe-card{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px;}
-.recipe-card .rname{font-size:15px;font-weight:900;margin:0 0 4px;}
-.badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:99px;margin-right:5px;}
+/* --- レシピカード --- */
+.recipe-card{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px; position:relative; overflow:hidden;}
+.recipe-card:active{transform: scale(0.98);}
+.recipe-card .rname{font-size:16px;font-weight:900;margin:0 0 6px;}
+.badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;margin-right:4px;}
 .badge.main{background:var(--main-soft);color:var(--main);}
 .badge.side{background:var(--side-soft);color:var(--side);}
 .badge.soup{background:var(--soup-soft);color:var(--soup);}
 .badge.other{background:var(--other-soft);color:var(--other);}
-.badge.srcbadge{background:#2B2118;color:#fff;}
-.tag-mini{font-size:11px;color:var(--ink-soft);margin-right:6px;}
+.tag-mini{font-size:11px;color:var(--ink-soft);margin-right:6px; background: rgba(0,0,0,0.05); padding: 1px 5px; border-radius: 4px;}
 
-.fab{position:fixed;bottom:calc(90px + var(--safe-bottom));right:calc((100vw - 480px)/2 + 18px);max-width:480px;background:var(--ink);color:#fff;border:none;border-radius:99px;padding:14px 22px;font-weight:900;font-size:14px;box-shadow:0 6px 14px rgba(0,0,0,.25);z-index:90;}
+/* --- ナビゲーション --- */
+.fab{position:fixed;bottom:calc(90px + var(--safe-bottom));right:calc((100vw - 480px)/2 + 18px);max-width:480px;background:var(--ink);color:#fff;border:none;border-radius:99px;padding:14px 22px;font-weight:900;font-size:14px;box-shadow:0 6px 14px rgba(0,0,0,.25);z-index:1000;}
 @media (max-width:520px){.fab{right:18px;}}
 
-.tabbar{position:fixed;left:0;right:0;bottom:0;max-width:480px;margin:0 auto;display:flex;background:var(--card);border-top:2px solid var(--line);padding: 8px 2px calc(8px + var(--safe-bottom));z-index:100;}
-.tab-btn{flex:1;background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 1px;border-radius:12px;color:var(--ink-soft);}
-.tab-btn.active{color:var(--ink);background:var(--paper);}
+.tabbar{position:fixed;left:0;right:0;bottom:0;max-width:480px;margin:0 auto;display:flex;background:var(--card);border-top:2px solid var(--line);padding: 8px 2px calc(8px + var(--safe-bottom));z-index:1000;}
+.tab-btn{flex:1;background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 1px;color:var(--ink-soft);}
+.tab-btn.active{color:var(--ink); background: var(--paper); border-radius: 12px;}
 .tab-btn svg{width:22px;height:22px;}
-.tab-label{font-size:10px;font-weight:700;}
+.tab-label{font-size:9px;font-weight:700;}
 
-.modal-overlay{position:fixed;inset:0;background:rgba(43,33,24,.45);display:flex;align-items:flex-end;justify-content:center;z-index:200;}
-.modal-sheet{background:var(--paper);width:100%;max-width:480px;max-height:92vh;overflow-y:auto;border-radius:20px 20px 0 0;padding:18px 16px calc(30px + var(--safe-bottom));animation:slideup .18s ease-out;}
+/* --- モーダル --- */
+.modal-overlay{position:fixed;inset:0;background:rgba(43,33,24,.45);display:flex;align-items:flex-end;justify-content:center;z-index:2000;}
+.modal-sheet{background:var(--paper);width:100%;max-width:480px;max-height:92vh;overflow-y:auto;border-radius:20px 20px 0 0;padding:18px 16px calc(40px + var(--safe-bottom));animation:slideup .18s ease-out;}
 @keyframes slideup{from{transform:translateY(24px);opacity:.4;}to{transform:translateY(0);opacity:1;}}
-.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;position:sticky;top:0;background:var(--paper);z-index:5;}
-.modal-head h2{margin:0;font-size:17px;}
-.modal-close{background:none;border:none;font-size:24px;color:var(--ink-soft);padding:4px 8px;}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;background:var(--paper);position:sticky;top:-18px;z-index:10;padding:10px 0;}
 
 .meal-block{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px;}
-.mb-head{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
-.meal-dot{width:12px;height:12px;border-radius:50%;}
-.meal-dot.breakfast{background:var(--breakfast);}
-.meal-dot.lunch{background:var(--lunch);}
-.meal-dot.dinner{background:var(--dinner);}
-.dish-line{padding:4px 0;font-size:14px;border-bottom:1px dashed var(--line);}
 .dish-row{display:flex;gap:6px;margin-top:6px;align-items:center;}
 .remove-x{background:none;border:none;color:var(--danger);font-size:20px;font-weight:900;padding:0 4px;}
-
-.ing-row{border-bottom:1px dashed var(--line);padding-bottom:10px;margin-bottom:10px;}
-.ing-line1{display:flex;gap:6px;align-items:center;}
-.ing-line2{display:flex;gap:6px;margin-top:6px;}
-.serving-stepper{display:flex;align-items:center;gap:10px;justify-content:center;margin:10px 0;}
-.serving-stepper button{width:40px;height:40px;border-radius:50%;border:2px solid var(--line);background:var(--card);font-size:18px;font-weight:900;}
-.snum{font-size:18px;font-weight:900;min-width:70px;text-align:center;}
-.note{font-size:12px;color:var(--ink-soft);line-height:1.6;}
-.rec-line{display:flex;justify-content:space-between;background:var(--card);border:2px solid var(--line);border-radius:10px;padding:8px 12px;margin-bottom:6px;font-size:13px;}
-.meal-tag{font-size:10px;font-weight:900;padding:2px 8px;border-radius:99px;color:#fff;margin-right:6px;}
-.meal-tag.breakfast{background:var(--breakfast);}
-.meal-tag.lunch{background:var(--lunch);}
-.meal-tag.dinner{background:var(--dinner);}
+.serving-stepper{display:flex;align-items:center;gap:10px;justify-content:center;margin:15px 0;}
+.serving-stepper button{width:40px;height:40px;border-radius:50%;border:2px solid var(--line);background:var(--card);font-size:20px;}
+.snum{font-size:18px;font-weight:900;min-width:60px;text-align:center;}
 </style>
 </head>
 <body>
@@ -178,9 +182,8 @@ async function loadAll(){
   state.records = await storageGet('records', {});
 }
 
-function ymd(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
-function yen(n){ return (n||0).toLocaleString('ja-JP') + '円'; }
 function esc(s){ return (s||'').toString().replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function yen(n){ return (n||0).toLocaleString('ja-JP') + '円'; }
 
 function setTab(tab){
   state.tab = tab;
@@ -206,7 +209,6 @@ function renderCalendar(){
   const el = document.getElementById('view-calendar');
   const y = state.month.getFullYear(), m = state.month.getMonth();
   const first = new Date(y,m,1).getDay(), last = new Date(y,m+1,0).getDate();
-  const today = ymd(new Date());
   let cells = '';
   for(let i=0;i<first;i++) cells += `<div class="cal-cell empty"></div>`;
   for(let d=1; d<=last; d++){
@@ -216,25 +218,27 @@ function renderCalendar(){
       const r = recs.find(x=>x.meal===ml);
       return r ? `<div class="stamp ${ml}">${MEAL_STAMP[ml]}${r.dishes.length>1?r.dishes.length:''}</div>` : '';
     }).join('');
-    cells += `<div class="cal-cell ${ds===today?'today':''}" data-date="${ds}"><div class="datenum">${d}</div><div class="stamp-row">${stamps}</div></div>`;
+    cells += `<div class="cal-cell" onclick="openDayModal('${ds}')"><div class="datenum">${d}</div><div class="stamp-row">${stamps}</div></div>`;
   }
   el.innerHTML = `
-    <div class="month-nav"><button id="prev-m">前月</button><div class="month-label">${y}年 ${m+1}月</div><button id="next-m">次月</button></div>
-    <div class="month-total"><span>今月の貯金</span><span class="num">${yen(Object.keys(state.records).reduce((t,k)=>{if(k.startsWith(y+'-'+String(m+1).padStart(2,'0')))t+=state.records[k].reduce((st,r)=>st+r.amount,0);return t;},0))}</span></div>
+    <div class="month-nav" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+      <button class="btn secondary small" id="prev-m">← 前月</button>
+      <div style="font-weight:900;">${y}年 ${m+1}月</div>
+      <button class="btn secondary small" id="next-m">次月 →</button>
+    </div>
     <div class="cal-grid">${cells}</div>
   `;
   document.getElementById('prev-m').onclick=()=>{state.month=new Date(y,m-1,1);renderCalendar();};
   document.getElementById('next-m').onclick=()=>{state.month=new Date(y,m+1,1);renderCalendar();};
-  el.querySelectorAll('.cal-cell[data-date]').forEach(c=>c.onclick=()=>openDayModal(c.dataset.date));
 }
 
 function openDayModal(ds){
   const recs = state.records[ds] || [];
   const blocks = ['breakfast','lunch','dinner'].map(ml=>{
     const r = recs.find(x=>x.meal===ml);
-    const content = r ? r.dishes.map(d=>`<div class="dish-line">${esc(d.name)}</div>`).join('') : '<div class="note">未入力（お小遣いのみ記録可）</div>';
+    const content = r ? r.dishes.map(d=>`<div style="font-size:14px; padding:4px 0; border-bottom:1px dashed var(--line);">${esc(d.name)}</div>`).join('') : '<div style="color:var(--ink-soft); font-size:12px;">未入力</div>';
     return `<div class="meal-block">
-      <div class="mb-head"><span class="meal-dot ${ml}"></span><b>${MEAL_LABEL[ml]}</b></div>
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;"><div class="stamp ${ml}" style="transform:none; width:16px; height:16px;">${MEAL_STAMP[ml]}</div><b>${MEAL_LABEL[ml]}</b></div>
       ${content}
       <div style="margin-top:8px; display:flex; justify-content:space-between; align-items:center;">
         <span style="font-weight:900; color:var(--coin-dark);">${r?yen(r.amount):''}</span>
@@ -242,7 +246,7 @@ function openDayModal(ds){
       </div>
     </div>`;
   }).join('');
-  showModal(`<div class="modal-head"><h2>${ds.split('-')[1]}月${ds.split('-')[2]}日のごはん</h2><button class="modal-close" onclick="closeModal()">×</button></div>${blocks}`);
+  showModal(`<div class="modal-head"><h2>${ds} の記録</h2><button class="modal-close" onclick="closeModal()">×</button></div>${blocks}`);
 }
 
 let currentMealDishes = [];
@@ -252,24 +256,21 @@ function openMealForm(ds, meal, r){
   const renderDishes = () => {
     document.getElementById('mf-dishes').innerHTML = currentMealDishes.map((d,i)=>`
       <div class="dish-row">
-        <input type="text" class="dish-input" placeholder="料理名（例：肉じゃが）" list="recipe-list" value="${esc(d.name)}" oninput="currentMealDishes[${i}].name=this.value">
-        ${currentMealDishes.length>1?`<button class="remove-x" onclick="currentMealDishes.splice(${i},1);openMealForm('${ds}','${meal}',{amount:${document.getElementById('mf-amount').value},dishes:currentMealDishes})">×</button>`:''}
+        <input type="text" class="dish-input" placeholder="料理名を入力" list="recipe-list" value="${esc(d.name)}" oninput="currentMealDishes[${i}].name=this.value">
+        <button class="remove-x" onclick="currentMealDishes.splice(${i},1);renderDishes()">×</button>
       </div>`).join('');
   };
-  const amount = r ? r.amount : (meal==='breakfast'?(state.settings.breakfastEarns?state.settings.breakfastPrice:0):meal==='lunch'?state.settings.lunchPrice:state.settings.dinnerPrice);
-  
   showModal(`
-    <div class="modal-head"><h2>${MEAL_LABEL[meal]}を記録</h2></div>
+    <div class="modal-head"><h2>${MEAL_LABEL[meal]}の入力</h2></div>
     <datalist id="recipe-list">${recipeDatalist}</datalist>
     <div id="mf-dishes"></div>
-    <button class="btn secondary small" style="margin-top:8px;" id="mf-add-dish">＋ 品数を追加</button>
+    <button class="btn secondary small" style="margin-top:10px;" id="mf-add-dish">＋ 品数を追加</button>
     <label class="field">お小遣い（円）</label>
-    <input type="number" id="mf-amount" value="${amount}">
+    <input type="number" id="mf-amount" value="${r?r.amount:300}">
     <div style="margin-top:20px; display:flex; gap:8px;">
       <button class="btn block" id="mf-save">保存</button>
-      <button class="btn secondary block" onclick="openDayModal('${ds}')">戻る</button>
+      <button class="btn secondary block" onclick="openDayModal('${ds}')">キャンセル</button>
     </div>
-    ${r?`<button class="btn danger small" style="margin-top:16px;" id="mf-del">この食事の記録を消す</button>`:''}
   `);
   renderDishes();
   document.getElementById('mf-add-dish').onclick = () => { currentMealDishes.push({name:''}); renderDishes(); };
@@ -282,38 +283,48 @@ function openMealForm(ds, meal, r){
     await storageSet('records', state.records);
     renderCalendar(); openDayModal(ds);
   };
-  if(r) document.getElementById('mf-del').onclick = async () => {
-    if(confirm('削除しますか？')){
-      state.records[ds] = state.records[ds].filter(x=>x.meal!==meal);
-      await storageSet('records', state.records);
-      renderCalendar(); openDayModal(ds);
-    }
-  };
 }
 
 /* --- RECIPES --- */
 function renderRecipes(){
   const el = document.getElementById('view-recipes');
+  const q = state.recipeFilter.q.toLowerCase();
+  
   const filtered = state.recipes.filter(r=>{
-    const q = state.recipeFilter.q.toLowerCase();
-    const matchQ = r.name.toLowerCase().includes(q) || (r.tags||[]).some(t=>t.toLowerCase().includes(q));
+    let matchQ = false;
+    // 「#」から始まる場合は分類名で検索
+    if (q.startsWith('#')) {
+      const searchCat = q.slice(1);
+      matchQ = CATEGORY_LABEL[r.category].includes(searchCat);
+    } else {
+      matchQ = r.name.toLowerCase().includes(q) || (r.tags||[]).some(t=>t.toLowerCase().includes(q));
+    }
     const matchCat = state.recipeFilter.cat === 'all' || r.category === state.recipeFilter.cat;
     return matchQ && matchCat;
   });
+
   el.innerHTML = `
-    <div style="position:sticky; top:60px; background:var(--paper); padding-bottom:10px; z-index:10;">
-      <input type="text" id="recipe-search" placeholder="料理名・食材タグで検索" value="${esc(state.recipeFilter.q)}">
-      <div class="chip-row" style="margin-top:8px;">
-        ${['all','main','side','soup','other'].map(c=>`<span class="chip ${state.recipeFilter.cat===c?'active':''}" onclick="state.recipeFilter.cat='${c}';renderRecipes()">${c==='all'?'すべて':CATEGORY_LABEL[c]}</span>`).join('')}
+    <div class="search-wrap">
+      <input type="text" id="recipe-search" placeholder="料理名・タグ検索 (#で分類検索)" value="${esc(state.recipeFilter.q)}">
+      <div class="chip-row">
+        ${['all','main','side','soup','other'].map(c=>`<div class="chip ${state.recipeFilter.cat===c?'active':''}" onclick="state.recipeFilter.cat='${c}';renderRecipes()">${c==='all'?'すべて':CATEGORY_LABEL[c]}</div>`).join('')}
       </div>
     </div>
-    <div id="recipe-list">${filtered.map(r=>`
-      <div class="recipe-card" onclick="openRecipeDetail('${r.id}')">
-        <div class="rname">${esc(r.name)}</div>
-        <span class="badge ${r.category}">${CATEGORY_LABEL[r.category]}</span>
-        <div style="margin-top:4px;">${(r.tags||[]).map(t=>`<span class="tag-mini">#${esc(t)}</span>`).join('')}</div>
-      </div>`).join('')}</div>`;
-  document.getElementById('recipe-search').oninput = (e)=>{ state.recipeFilter.q = e.target.value; renderRecipes(); };
+    <div id="recipe-list">
+      ${filtered.length ? filtered.map(r=>`
+        <div class="recipe-card" onclick="openRecipeDetail('${r.id}')">
+          <div class="rname">${esc(r.name)}</div>
+          <span class="badge ${r.category}">${CATEGORY_LABEL[r.category]}</span>
+          <div style="margin-top:6px;">${(r.tags||[]).map(t=>`<span class="tag-mini">#${esc(t)}</span>`).join('')}</div>
+        </div>`).join('') : '<div style="text-align:center; padding:40px; color:var(--ink-soft);">レシピが見つかりません</div>'}
+    </div>`;
+
+  const searchInput = document.getElementById('recipe-search');
+  searchInput.focus(); // 検索後にフォーカスを維持
+  searchInput.oninput = (e)=>{ 
+    state.recipeFilter.q = e.target.value; 
+    renderRecipes(); 
+  };
 }
 
 let formIngs = [];
@@ -322,42 +333,26 @@ function openRecipeForm(rid){
   formIngs = r ? r.ingredients : [{name:'', amt:'', unit:''}];
   let steps = r ? r.steps : [''];
 
-  const renderSteps = () => {
-    document.getElementById('rf-steps').innerHTML = steps.map((s,i)=>`
-      <div class="dish-row" style="align-items:flex-start;">
-        <span style="font-size:12px; margin-top:14px; width:20px;">${i+1}</span>
-        <textarea oninput="steps[${i}]=this.value">${esc(s)}</textarea>
-        <button class="remove-x" onclick="steps.splice(${i},1);renderSteps()">×</button>
-      </div>`).join('');
-  };
-
   const renderIngs = () => {
     document.getElementById('rf-ings').innerHTML = formIngs.map((ing,i)=>`
-      <div class="ing-row">
-        <div class="ing-line1">
+      <div style="border-bottom:1px dashed var(--line); padding-bottom:8px; margin-bottom:8px;">
+        <div style="display:flex; gap:6px;">
           <input type="text" placeholder="材料名" value="${esc(ing.name)}" oninput="formIngs[${i}].name=this.value" style="flex:1;">
           <button class="remove-x" onclick="formIngs.splice(${i},1);renderIngs()">×</button>
         </div>
-        <div class="ing-line2">
-          <input type="text" placeholder="量" value="${esc(ing.amt)}" oninput="formIngs[${i}].amt=this.value">
-          <select onchange="formIngs[${i}].unit=this.value">
-            <option value="">単位</option>
+        <div style="display:flex; gap:6px; margin-top:4px;">
+          <input type="text" placeholder="量" value="${esc(ing.amt)}" oninput="formIngs[${i}].amt=this.value" style="flex:1;">
+          <select onchange="formIngs[${i}].unit=this.value" style="flex:1;">
+            <option value="">単位選択</option>
             ${UNIT_OPTIONS.map(u=>`<option value="${u}" ${ing.unit===u?'selected':''}>${u}</option>`).join('')}
-            <option value="custom">自由入力</option>
           </select>
-          ${ing.unit==='custom'||(!UNIT_OPTIONS.includes(ing.unit)&&ing.unit!=='')?`<input type="text" placeholder="単位" value="${esc(ing.unit==='custom'?'':ing.unit)}" oninput="formIngs[${i}].unit=this.value">`:''}
         </div>
       </div>`).join('');
   };
 
   showModal(`
-    <div class="modal-head"><h2>${r?'レシピ編集':'レシピ追加'}</h2><button class="modal-close" onclick="closeModal()">×</button></div>
-    <label class="field">URL (TikTok/Webなど)</label>
-    <input type="url" id="rf-url" value="${r?esc(r.url):''}" placeholder="https://...">
-    <label class="field">キャプション・説明のメモ</label>
-    <textarea id="rf-caption" placeholder="動画の説明文などを貼り付け">${r?esc(r.caption):''}</textarea>
-    
-    <label class="field">レシピ名</label>
+    <div class="modal-head"><h2>レシピ登録</h2><button class="modal-close" onclick="closeModal()">×</button></div>
+    <label class="field">レシピの名前</label>
     <input type="text" id="rf-name" value="${r?esc(r.name):''}">
     
     <label class="field">分類</label>
@@ -365,32 +360,33 @@ function openRecipeForm(rid){
       ${Object.entries(CATEGORY_LABEL).map(([k,v])=>`<option value="${k}" ${r&&r.category===k?'selected':''}>${v}</option>`).join('')}
     </select>
     
-    <label class="field">食材タグ (コンマ区切り：牛肉, 野菜など)</label>
-    <input type="text" id="rf-tags" value="${r?esc(r.tags.join(', ')):''}" placeholder="鶏肉, 玉ねぎ">
+    <label class="field">材料タグ (検索用：鶏肉, 玉ねぎなど)</label>
+    <input type="text" id="rf-tags" value="${r?esc(r.tags.join(', ')):''}" placeholder="牛肉, キャベツ">
     
-    <label class="field">材料 (基準：<input type="number" id="rf-serv" value="${r?r.serv:2}" style="width:50px; display:inline;">人分)</label>
+    <label class="field">URL (TikTokなどの参考リンク)</label>
+    <input type="url" id="rf-url" value="${r?esc(r.url):''}">
+    
+    <label class="field">メモ・動画のキャプション</label>
+    <textarea id="rf-caption" style="min-height:80px;">${r?esc(r.caption):''}</textarea>
+
+    <label class="field">材料リスト</label>
     <div id="rf-ings"></div>
-    <button class="btn secondary small" onclick="formIngs.push({name:'',amt:'',unit:''});renderIngs()">＋ 材料追加</button>
-    
-    <label class="field">作り方</label>
-    <div id="rf-steps"></div>
-    <button class="btn secondary small" onclick="steps.push('');renderSteps()">＋ 手順追加</button>
-    
+    <button class="btn secondary small" onclick="formIngs.push({name:'',amt:'',unit:''});renderIngs()">＋ 材料を追加</button>
+
     <div style="margin-top:24px; display:flex; gap:8px;">
       <button class="btn block" id="rf-save">保存</button>
       <button class="btn secondary block" onclick="closeModal()">キャンセル</button>
     </div>
   `);
-  renderIngs(); renderSteps();
+  renderIngs();
   document.getElementById('rf-save').onclick = async () => {
     const name = document.getElementById('rf-name').value.trim();
-    if(!name) return alert('名前を入力してください');
+    if(!name) return alert('名前を入れてね');
     const newRecipe = {
       id: r?r.id:uid(), name, url: document.getElementById('rf-url').value, caption: document.getElementById('rf-caption').value,
       category: document.getElementById('rf-cat').value,
       tags: document.getElementById('rf-tags').value.split(',').map(t=>t.trim()).filter(Boolean),
-      serv: Number(document.getElementById('rf-serv').value),
-      ingredients: formIngs.filter(i=>i.name), steps: steps.filter(s=>s.trim())
+      serv: 2, ingredients: formIngs.filter(i=>i.name), steps: []
     };
     if(r) state.recipes = state.recipes.map(x=>x.id===r.id?newRecipe:x);
     else state.recipes.push(newRecipe);
@@ -401,94 +397,43 @@ function openRecipeForm(rid){
 
 function openRecipeDetail(rid){
   const r = state.recipes.find(x=>x.id===rid);
-  let s = r.serv;
-  const renderDetail = () => {
-    const ings = r.ingredients.map(ing=>{
-      const a = !isNaN(ing.amt) ? Math.round((ing.amt*(s/r.serv))*10)/10 : ing.amt;
-      return `<div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px dashed var(--line); font-size:14px;"><span>${esc(ing.name)}</span><span>${a}${esc(ing.unit)}</span></div>`;
-    }).join('');
-    showModal(`
-      <div class="modal-head"><h2>${esc(r.name)}</h2><button class="modal-close" onclick="closeModal()">×</button></div>
-      <div class="chip-row">${(r.tags||[]).map(t=>`<span class="tag-mini">#${esc(t)}</span>`).join('')}</div>
-      <div class="serving-stepper"><button onclick="if(s>1)s--;renderDetail()">－</button><div class="snum">${s}人分</div><button onclick="s++;renderDetail()">＋</button></div>
-      <h3 style="font-size:15px; margin-bottom:8px;">材料</h3>${ings}
-      <h3 style="font-size:15px; margin-top:20px; margin-bottom:8px;">作り方</h3>
-      ${r.steps.map((st,i)=>`<div style="display:flex; gap:10px; margin-bottom:10px; font-size:14px;"><span style="color:var(--ink-soft); font-weight:900;">${i+1}.</span><span>${esc(st)}</span></div>`).join('')}
-      ${r.caption?`<div style="margin-top:20px; padding:10px; background:#eee; border-radius:10px; font-size:12px;">${esc(r.caption)}</div>`:''}
-      <div style="margin-top:24px; display:flex; gap:8px;">
-        <button class="btn block" onclick="openRecipeForm('${r.id}')">編集</button>
-        ${r.url?`<a href="${esc(r.url)}" target="_blank" class="btn secondary block" style="text-decoration:none; text-align:center;">元のサイト</a>`:''}
-      </div>`);
-  };
-  renderDetail();
+  showModal(`
+    <div class="modal-head"><h2>${esc(r.name)}</h2><button class="modal-close" onclick="closeModal()">×</button></div>
+    <span class="badge ${r.category}">${CATEGORY_LABEL[r.category]}</span>
+    <div style="margin-top:8px;">${(r.tags||[]).map(t=>`<span class="tag-mini">#${esc(t)}</span>`).join('')}</div>
+    <h3 style="font-size:15px; margin-top:20px;">材料</h3>
+    ${r.ingredients.map(ing=>`<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px dashed var(--line); font-size:14px;"><span>${esc(ing.name)}</span><span>${esc(ing.amt)}${esc(ing.unit)}</span></div>`).join('')}
+    ${r.caption?`<div style="margin-top:20px; padding:12px; background:rgba(0,0,0,0.05); border-radius:10px; font-size:13px; line-height:1.6; white-space:pre-wrap;">${esc(r.caption)}</div>`:''}
+    <div style="margin-top:24px; display:flex; gap:8px;">
+      <button class="btn block" onclick="openRecipeForm('${r.id}')">編集</button>
+      ${r.url?`<a href="${esc(r.url)}" target="_blank" class="btn secondary block" style="text-decoration:none; text-align:center;">リンクを開く</a>`:''}
+    </div>`);
 }
 
-/* --- OTHERS --- */
+/* --- その他 --- */
 function renderHistory(){
   const el = document.getElementById('view-history');
   let items = [];
   Object.keys(state.records).forEach(ds=>{ state.records[ds].forEach(r=>items.push({ds, ...r})); });
   items.sort((a,b)=>b.ds.localeCompare(a.ds));
-  const q = state.historyQuery.toLowerCase();
-  const filtered = items.filter(it=> it.dishes.some(d=>d.name.toLowerCase().includes(q)));
-  el.innerHTML = `
-    <input type="text" id="hist-search" placeholder="料理名で検索" value="${esc(state.historyQuery)}">
-    <div style="margin-top:12px;">${filtered.map(it=>`
-      <div class="rec-line"><span><span class="meal-tag ${it.meal}">${MEAL_STAMP[it.meal]}</span>${it.ds.slice(5)} ${it.dishes.map(d=>esc(d.name)).join(', ')}</span><b>${yen(it.amount)}</b></div>
-    `).join('')}</div>`;
-  document.getElementById('hist-search').oninput=(e)=>{state.historyQuery=e.target.value;renderHistory();};
+  el.innerHTML = `<h3>履歴</h3><div style="margin-top:12px;">${items.map(it=>`
+    <div class="rec-line"><span><span class="meal-tag ${it.meal}">${MEAL_STAMP[it.meal]}</span>${it.ds} ${it.dishes.map(d=>esc(d.name)).join(', ')}</span><b>${yen(it.amount)}</b></div>
+  `).join('')}</div>`;
 }
 
 function renderMoney(){
   const el = document.getElementById('view-money');
   const y = state.month.getFullYear(), m = state.month.getMonth();
   const monthTotal = Object.keys(state.records).reduce((t,k)=>{if(k.startsWith(y+'-'+String(m+1).padStart(2,'0')))t+=state.records[k].reduce((st,r)=>st+r.amount,0);return t;},0);
-  const pct = Math.min(100, Math.round((monthTotal/state.settings.goal)*100));
-  el.innerHTML = `
-    <div style="text-align:center; padding:30px 0;">
-      <svg width="120" height="120" viewBox="0 0 100 100">
-        <path d="M25 30 L20 90 Q20 96 26 96 L74 96 Q80 96 80 90 L75 30 Z" fill="none" stroke="var(--ink)" stroke-width="3"/>
-        <rect x="20" y="${96-(pct*0.66)}" width="60" height="${pct*0.66}" fill="var(--coin)" clip-path="inset(0 0 0 0)"/>
-        <text x="50" y="65" font-size="12" text-anchor="middle" font-weight="900">${pct}%</text>
-      </svg>
-      <div style="margin-top:10px; font-weight:900; font-size:20px;">${yen(monthTotal)}</div>
-      <div class="note">目標：${yen(state.settings.goal)}</div>
-    </div>`;
+  el.innerHTML = `<div style="text-align:center; padding:40px 0;"><h2 style="font-size:32px;">${yen(monthTotal)}</h2><p style="color:var(--ink-soft);">現在の貯金額</p></div>`;
 }
 
 function renderSettings(){
   const el = document.getElementById('view-settings');
-  const s = state.settings;
-  el.innerHTML = `
-    <div class="settings-block">
-      <h3>1回あたりのお小遣い</h3>
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-        <span>朝ごはんも貯金する</span>
-        <input type="checkbox" id="st-br-on" ${s.breakfastEarns?'checked':''}>
-      </div>
-      <label class="field">朝（円）</label><input type="number" id="st-br-p" value="${s.breakfastPrice}">
-      <label class="field">昼（円）</label><input type="number" id="st-lu-p" value="${s.lunchPrice}">
-      <label class="field">夜（円）</label><input type="number" id="st-di-p" value="${s.dinnerPrice}">
-    </div>
-    <div class="settings-block">
-      <h3>今月の目標金額</h3>
-      <input type="number" id="st-goal" value="${s.goal}">
-    </div>
-    <button class="btn block" onclick="saveSettings()">設定を保存</button>`;
-}
-async function saveSettings(){
-  state.settings = {
-    breakfastEarns: document.getElementById('st-br-on').checked,
-    breakfastPrice: Number(document.getElementById('st-br-p').value),
-    lunchPrice: Number(document.getElementById('st-lu-p').value),
-    dinnerPrice: Number(document.getElementById('st-di-p').value),
-    goal: Number(document.getElementById('st-goal').value),
-  };
-  await storageSet('settings', state.settings);
-  alert('保存しました');
+  el.innerHTML = `<div class="settings-block"><h3>設定</h3><p>今後のアップデートで追加予定です</p></div>`;
 }
 
-(async function init(){ await loadAll(); renderCalendar(); })();
+(async function init(){ await loadAll(); setTab('calendar'); })();
 </script>
 </body>
 </html>
