@@ -47,7 +47,7 @@ label.field{display:block;font-size:12px;color:var(--ink-soft);font-weight:700;m
 
 .chip-row{display:flex; flex-wrap:wrap; gap:6px; margin-top:8px;}
 .chip{display:inline-flex;padding:5px 12px;border-radius:99px;font-size:11px;font-weight:700;border:2px solid var(--line);background:var(--card);color:var(--ink-soft);cursor:pointer;}
-.chip.active{border-color:var(--ink);color:var(--ink);background:var(--paper);}
+.chip.active{border-color:var(--ink);color:#fff;background:var(--ink);box-shadow:0 2px 6px rgba(43,33,24,.25);}
 
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
 .cal-cell{background:var(--card);border:2px solid var(--line);border-radius:10px;min-height:64px;padding:4px 2px;display:flex;flex-direction:column;align-items:center;cursor:pointer;}
@@ -100,7 +100,7 @@ label.field{display:block;font-size:12px;color:var(--ink-soft);font-weight:700;m
     <section id="view-calendar" class="view active"></section>
     <section id="view-recipes" class="view">
       <div class="search-container">
-        <input type="text" id="recipe-search" placeholder="料理名・タグ検索 (#で分類検索)">
+        <input type="text" id="recipe-search" placeholder="料理名・タグ検索 (#で分類/材料検索)">
         <div id="category-chips" class="chip-row"></div>
       </div>
       <div id="recipe-list"></div>
@@ -312,13 +312,32 @@ function initRecipeView() {
   if(!searchInput || !chipsContainer) return;
   searchInput.oninput = (e) => { state.recipeFilter.q = e.target.value; renderRecipes(); };
   chipsContainer.innerHTML = ['all','main','side','soup','other'].map(c => `<div class="chip ${state.recipeFilter.cat===c?'active':''}" data-cat="${c}">${c==='all'?'すべて':CATEGORY_LABEL[c]}</div>`).join('');
-  chipsContainer.querySelectorAll('.chip').forEach(chip => { chip.onclick = () => { state.recipeFilter.cat = chip.dataset.cat; renderRecipes(); }; });
+  chipsContainer.querySelectorAll('.chip').forEach(chip => {
+    chip.onclick = () => {
+      state.recipeFilter.cat = chip.dataset.cat;
+      chipsContainer.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c === chip));
+      renderRecipes();
+    };
+  });
 }
 function renderRecipes(){
   const listEl = document.getElementById('recipe-list');
   const q = state.recipeFilter.q.toLowerCase();
   const filtered = state.recipes.filter(r => {
-    let m = q.startsWith('#') ? CATEGORY_LABEL[r.category].includes(q.slice(1)) : (r.name.toLowerCase().includes(q) || (r.tags||[]).some(t=>t.toLowerCase().includes(q)));
+    let m;
+    if (q.startsWith('#')) {
+      const kw = q.slice(1).trim();
+      if (!kw) {
+        m = true;
+      } else {
+        const catMatch = CATEGORY_LABEL[r.category].toLowerCase().includes(kw);
+        const ingMatch = (r.ingredients||[]).some(ing => (ing.name||'').toLowerCase().includes(kw));
+        const tagMatch = (r.tags||[]).some(t => (t||'').toLowerCase().includes(kw));
+        m = catMatch || ingMatch || tagMatch;
+      }
+    } else {
+      m = r.name.toLowerCase().includes(q) || (r.tags||[]).some(t=>t.toLowerCase().includes(q));
+    }
     return m && (state.recipeFilter.cat === 'all' || r.category === state.recipeFilter.cat);
   });
   listEl.innerHTML = filtered.map(r => `
@@ -416,11 +435,65 @@ function renderHistory(){
 
 function renderMoney(){
   const el = document.getElementById('view-money');
-  el.innerHTML = `<div style="text-align:center; padding:40px 0;"><h2 style="font-size:32px;">${yen(calcMonthTotal(state.month.getFullYear(), state.month.getMonth()))}</h2><p style="color:var(--ink-soft);">今月の貯金</p></div>`;
+  const total = calcMonthTotal(state.month.getFullYear(), state.month.getMonth());
+  const goal = Number(state.settings.goal) || 0;
+  const pct = goal > 0 ? Math.min(100, Math.round((total / goal) * 100)) : 0;
+
+  // 瓶（ボトル）の輪郭パス
+  const neckX1 = 63, neckX2 = 97, neckTop = 16, neckBottom = 56;
+  const shoulderBottom = 86, bodyX1 = 24, bodyX2 = 136, bodyBottom = 256, bottomRadius = 20;
+  const bottlePath = `M${neckX1},${neckTop} L${neckX2},${neckTop} L${neckX2},${neckBottom}
+    C${neckX2 + 18},${neckBottom + 10} ${bodyX2},${shoulderBottom - 14} ${bodyX2},${shoulderBottom}
+    L${bodyX2},${bodyBottom - bottomRadius}
+    Q${bodyX2},${bodyBottom} ${bodyX2 - bottomRadius},${bodyBottom}
+    L${bodyX1 + bottomRadius},${bodyBottom}
+    Q${bodyX1},${bodyBottom} ${bodyX1},${bodyBottom - bottomRadius}
+    L${bodyX1},${shoulderBottom}
+    C${bodyX1},${shoulderBottom - 14} ${neckX1 - 18},${neckBottom + 10} ${neckX1},${neckBottom} Z`;
+
+  const totalH = bodyBottom - neckTop;
+  const fillH = totalH * (pct / 100);
+  const fillY = bodyBottom - fillH;
+
+  el.innerHTML = `
+    <div style="text-align:center; padding:20px 0;">
+      <h2 style="font-size:32px; margin-bottom:4px;">${yen(total)}</h2>
+      <p style="color:var(--ink-soft); margin:2px 0 0;">${goal > 0 ? `目標 ${yen(goal)}（達成率 ${pct}%）` : '設定タブで目標額を決めよう'}</p>
+      <div style="display:flex; justify-content:center; margin-top:18px;">
+        <svg width="160" height="280" viewBox="0 0 160 280">
+          <defs><clipPath id="bottleClip"><path d="${bottlePath}"/></clipPath></defs>
+          <path d="${bottlePath}" fill="var(--card)"/>
+          <g clip-path="url(#bottleClip)">
+            <rect x="0" y="${fillY}" width="160" height="${fillH + 6}" fill="var(--coin)" style="transition: y .6s ease, height .6s ease;"/>
+            <rect x="0" y="${fillY}" width="160" height="4" fill="#fff" opacity="0.35" style="transition: y .6s ease;"/>
+          </g>
+          <path d="${bottlePath}" fill="none" stroke="var(--ink)" stroke-width="4"/>
+          <rect x="${neckX1 - 6}" y="4" width="${neckX2 - neckX1 + 12}" height="14" rx="4" fill="var(--ink)"/>
+          <text x="80" y="270" text-anchor="middle" font-size="18" font-weight="900" fill="var(--coin-dark)">${pct}%</text>
+        </svg>
+      </div>
+    </div>`;
 }
 
 function renderSettings(){
-  document.getElementById('view-settings').innerHTML = `<div class="settings-block"><h3>管理</h3><button class="btn danger block" onclick="if(confirm('リセットしますか？')) {localStorage.clear(); location.reload();}">全データ削除</button></div>`;
+  const goal = Number(state.settings.goal) || 0;
+  document.getElementById('view-settings').innerHTML = `
+    <div class="settings-block">
+      <h3>目標設定</h3>
+      <label class="field">今月の目標貯金額（円）</label>
+      <input type="number" id="set-goal" value="${goal}">
+      <button class="btn block" id="btn-save-goal" style="margin-top:10px;">保存</button>
+    </div>
+    <div class="settings-block" style="margin-top:28px;">
+      <h3>管理</h3>
+      <button class="btn danger block" onclick="if(confirm('リセットしますか？')) {localStorage.clear(); location.reload();}">全データ削除</button>
+    </div>`;
+  document.getElementById('btn-save-goal').onclick = async () => {
+    state.settings.goal = Number(document.getElementById('set-goal').value) || 0;
+    await storageSet('settings', state.settings);
+    renderMoney();
+    alert('目標額を保存しました');
+  };
 }
 
 /* 初期化 */
