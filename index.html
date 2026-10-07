@@ -480,24 +480,22 @@ function renderMoney(){
 }
 
 function renderSettings(){
-  const goal = Number(state.settings.goal) || 0;
-  document.getElementById('view-settings').innerHTML = `
+  const el = document.getElementById('view-settings');
+  // データをJSONで確認するボタンを追加
+  el.innerHTML = `
     <div class="settings-block">
-      <h3>目標設定</h3>
-      <label class="field">今月の目標貯金額（円）</label>
-      <input type="number" id="set-goal" value="${goal}">
-      <button class="btn block" id="btn-save-goal" style="margin-top:10px;">保存</button>
-    </div>
-    <div class="settings-block" style="margin-top:28px;">
-      <h3>管理</h3>
-      <button class="btn danger block" onclick="if(confirm('リセットしますか？')) {localStorage.clear(); location.reload();}">全データ削除</button>
+      <h3>データ管理</h3>
+      <button class="btn block" onclick="debugData()">現在のデータを表示する</button>
+      <div id="debug-area" style="margin-top:10px; font-size:10px; word-break:break-all; background:#eee; padding:5px;"></div>
+      <hr style="margin:20px 0;">
+      <button class="btn danger block" onclick="if(confirm('全てのデータを消去しますか？')) {localStorage.clear(); location.reload();}">全データを削除</button>
     </div>`;
-  document.getElementById('btn-save-goal').onclick = async () => {
-    state.settings.goal = Number(document.getElementById('set-goal').value) || 0;
-    await storageSet('settings', state.settings);
-    renderMoney();
-    alert('目標額を保存しました');
-  };
+}
+
+function debugData(){
+  const area = document.getElementById('debug-area');
+  const recs = localStorage.getItem('records');
+  area.innerText = recs ? recs : "データが空です（null）";
 }
 
 /* 初期化 */
