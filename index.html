@@ -46,7 +46,7 @@ button{font-family:inherit;cursor:pointer; touch-action: manipulation;}
 .btn.block{width:100%;}
 .btn.small{padding:6px 10px;font-size:12px;border-radius:9px;}
 
-input[type=text],input[type=number],input[type=url],select,textarea{ width:100%;font-family:inherit;font-size:16px; color:var(--ink); border:2px solid var(--line);border-radius:10px;background:var(--card); padding:12px 10px;margin-top:4px; }
+input[type=text],input[type=number],input[type=url],input[type=email],input[type=password],select,textarea{ width:100%;font-family:inherit;font-size:16px; color:var(--ink); border:2px solid var(--line);border-radius:10px;background:var(--card); padding:12px 10px;margin-top:4px; }
 label.field{display:block;font-size:12px;color:var(--ink-soft);font-weight:700;margin-top:12px;}
 
 .chip-row{display:flex; flex-wrap:wrap; gap:6px; margin-top:8px;}
@@ -553,11 +553,14 @@ async function importBackup(file){
   if (!file) return;
   let data;
   try { data = JSON.parse(await file.text()); } catch(e){ alert('ファイルを読み込めませんでした。'); return; }
+  await applyBackupData(data, 'バックアップファイル');
+}
+async function applyBackupData(data, label){
   if (!data || data.app !== 'GohanChokin' || !data.settings || !data.records || Array.isArray(data.records) || !Array.isArray(data.recipes)) {
-    alert('GohanChokinのバックアップファイルではありません。'); return;
+    alert('GohanChokinのバックアップデータではありません。'); return;
   }
   const nRec = Object.values(data.records).reduce((s,a) => s + (Array.isArray(a) ? a.length : 0), 0);
-  if (!confirm('バックアップ（記録' + nRec + '件・レシピ' + data.recipes.length + '件）で、今のデータを置き換えます。よろしいですか？')) return;
+  if (!confirm(label + 'の内容（記録' + nRec + '件・レシピ' + data.recipes.length + '件）で、今のデータを置き換えます。よろしいですか？')) return;
   const keys = ['records','recipes','settings'];
   const old = {};
   keys.forEach(k => { try { old[k] = localStorage.getItem(k); } catch(e){ old[k] = null; } });
@@ -570,6 +573,89 @@ async function importBackup(file){
   }
   alert('復元しました。');
   location.reload();
+}
+
+/* クラウドバックアップ（Supabase） */
+const SB_URL = 'https://nwzgmeirapwmnnzdlgng.supabase.co';
+const SB_KEY = 'sb_publishable_XXyXVIMOqo0sqsstiOw6Jw_tHQTjB8g';
+function sbGetSession(){ try { return JSON.parse(localStorage.getItem('sb_session')); } catch(e){ return null; } }
+function sbSetSession(s){ try { if (s) localStorage.setItem('sb_session', JSON.stringify(s)); else localStorage.removeItem('sb_session'); } catch(e){} }
+function sbToSession(j){ return { access_token:j.access_token, refresh_token:j.refresh_token, expires_at:Math.floor(Date.now()/1000) + (j.expires_in || 3600), user_id:j.user.id, email:j.user.email }; }
+async function sbLogin(email, password){
+  const r = await fetch(SB_URL + '/auth/v1/token?grant_type=password', { method:'POST', headers:{'apikey':SB_KEY, 'Content-Type':'application/json'}, body:JSON.stringify({email, password}) });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok || !j.access_token) throw new Error('login');
+  sbSetSession(sbToSession(j));
+}
+async function sbToken(){
+  let s = sbGetSession();
+  if (!s) throw new Error('nologin');
+  if (s.expires_at - 60 > Date.now() / 1000) return s;
+  const r = await fetch(SB_URL + '/auth/v1/token?grant_type=refresh_token', { method:'POST', headers:{'apikey':SB_KEY, 'Content-Type':'application/json'}, body:JSON.stringify({refresh_token:s.refresh_token}) });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok || !j.access_token) { if (r.status === 400 || r.status === 401) sbSetSession(null); throw new Error('nologin'); }
+  s = sbToSession(j); sbSetSession(s); return s;
+}
+async function sbRest(path, opts){
+  const s = await sbToken();
+  const o = opts || {};
+  const r = await fetch(SB_URL + '/rest/v1/' + path, Object.assign({}, o, { headers:Object.assign({'apikey':SB_KEY, 'Authorization':'Bearer ' + s.access_token, 'Content-Type':'application/json'}, o.headers || {}) }));
+  if (!r.ok) throw new Error('rest ' + r.status);
+  return r;
+}
+function cloudError(e, what){
+  if (e && e.message === 'nologin') { alert('ログインが切れました。もう一度ログインしてください。'); renderSettings(); }
+  else alert('クラウド' + what + 'に失敗しました。通信状況を確認してください。');
+}
+async function cloudSave(){
+  try {
+    const nRec = Object.values(state.records).reduce((s,a) => s + (Array.isArray(a) ? a.length : 0), 0);
+    if (nRec === 0 && state.recipes.length === 0) {
+      if (!confirm('今のデータは空です。このまま保存すると、クラウドの保存内容が空で上書きされます。先に「クラウドから復元」をおすすめします。それでも保存しますか？')) return;
+    }
+    const s = await sbToken();
+    const data = { app:'GohanChokin', version:1, exportedAt:new Date().toISOString(), settings:state.settings, recipes:state.recipes, records:state.records };
+    await sbRest('gohanchokin_backups?on_conflict=user_id', { method:'POST', headers:{'Prefer':'resolution=merge-duplicates,return=minimal'}, body:JSON.stringify({ user_id:s.user_id, data, updated_at:new Date().toISOString() }) });
+    await storageSet('lastCloud', new Date().toISOString());
+    alert('クラウドに保存しました。');
+    renderSettings();
+  } catch(e){ cloudError(e, '保存'); }
+}
+async function cloudLoad(){
+  try {
+    const s = await sbToken();
+    const r = await sbRest('gohanchokin_backups?select=data,updated_at&user_id=eq.' + encodeURIComponent(s.user_id), { method:'GET' });
+    const rows = await r.json();
+    if (!rows.length) { alert('クラウドにはまだ保存されていません。'); return; }
+    await applyBackupData(rows[0].data, 'クラウド（' + new Date(rows[0].updated_at).toLocaleString('ja-JP') + ' 保存）');
+  } catch(e){ cloudError(e, '復元'); }
+}
+async function cloudLoginClick(){
+  const email = document.getElementById('cl-email').value.trim();
+  const pass = document.getElementById('cl-pass').value;
+  if (!email || !pass) { alert('メールアドレスとパスワードを入力してください。'); return; }
+  const btn = document.getElementById('btn-cl-login'); btn.disabled = true;
+  try { await sbLogin(email, pass); renderSettings(); }
+  catch(e){ btn.disabled = false; alert('ログインできませんでした。メールアドレスとパスワードを確認してください。'); }
+}
+function cloudBlockHtml(){
+  const s = sbGetSession();
+  let last = '未実施';
+  try { const v = JSON.parse(localStorage.getItem('lastCloud')); if (v) last = new Date(v).toLocaleString('ja-JP'); } catch(e){}
+  if (!s) return `<div class="settings-block" style="margin-top:28px;">
+      <h3>クラウドバックアップ</h3>
+      <div style="font-size:14px; margin-bottom:10px;">未ログイン</div>
+      <input type="email" id="cl-email" placeholder="メールアドレス" autocomplete="username">
+      <input type="password" id="cl-pass" placeholder="パスワード" autocomplete="current-password" style="margin-top:8px;">
+      <button class="btn block" id="btn-cl-login" style="margin-top:10px;">ログイン</button>
+    </div>`;
+  return `<div class="settings-block" style="margin-top:28px;">
+      <h3>クラウドバックアップ</h3>
+      <div style="font-size:14px; margin-bottom:10px;">ログイン中：${esc(s.email)}<br>この端末から最後に保存：${last}</div>
+      <button class="btn block" id="btn-cl-save">クラウドに保存</button>
+      <button class="btn secondary block" id="btn-cl-load" style="margin-top:10px;">クラウドから復元</button>
+      <button class="btn secondary small" id="btn-cl-logout" style="margin-top:10px;">ログアウト</button>
+    </div>`;
 }
 
 function resetAll(){
@@ -598,12 +684,17 @@ function renderSettings(){
       <button class="btn secondary block" id="btn-import" style="margin-top:10px;">バックアップから復元</button>
       <input type="file" id="import-file" accept=".json,application/json" style="display:none;">
     </div>
+    ${cloudBlockHtml()}
     <div class="settings-block" style="margin-top:28px;">
       <h3>管理</h3>
       <button class="btn danger block" id="btn-reset">全データ削除</button>
     </div>`;
   updateStorageInfo();
   document.getElementById('btn-reset').onclick = resetAll;
+  const clLogin = document.getElementById('btn-cl-login'); if (clLogin) clLogin.onclick = cloudLoginClick;
+  const clSave = document.getElementById('btn-cl-save'); if (clSave) clSave.onclick = cloudSave;
+  const clLoad = document.getElementById('btn-cl-load'); if (clLoad) clLoad.onclick = cloudLoad;
+  const clOut = document.getElementById('btn-cl-logout'); if (clOut) clOut.onclick = () => { sbSetSession(null); renderSettings(); };
   document.getElementById('btn-export').onclick = () => { requestPersist(); exportBackup(); };
   document.getElementById('btn-import').onclick = () => document.getElementById('import-file').click();
   document.getElementById('import-file').onchange = (e) => { const f = e.target.files[0]; e.target.value = ''; importBackup(f); };
