@@ -572,6 +572,15 @@ async function importBackup(file){
   location.reload();
 }
 
+function resetAll(){
+  if (!confirm('すべての記録・レシピ・写真が削除されます。\n最終バックアップ：' + getLastBackup() + '\n続けますか？')) return;
+  const t = prompt('本当に削除する場合は「削除」と入力してください。');
+  if (t === null) return;
+  if (t.trim() !== '削除') { alert('入力が違うため、削除しませんでした。'); return; }
+  localStorage.clear();
+  location.reload();
+}
+
 function renderSettings(){
   const goal = Number(state.settings.goal) || 0;
   document.getElementById('view-settings').innerHTML = `
@@ -591,9 +600,10 @@ function renderSettings(){
     </div>
     <div class="settings-block" style="margin-top:28px;">
       <h3>管理</h3>
-      <button class="btn danger block" onclick="if(confirm('リセットしますか？')) {localStorage.clear(); location.reload();}">全データ削除</button>
+      <button class="btn danger block" id="btn-reset">全データ削除</button>
     </div>`;
   updateStorageInfo();
+  document.getElementById('btn-reset').onclick = resetAll;
   document.getElementById('btn-export').onclick = () => { requestPersist(); exportBackup(); };
   document.getElementById('btn-import').onclick = () => document.getElementById('import-file').click();
   document.getElementById('import-file').onchange = (e) => { const f = e.target.files[0]; e.target.value = ''; importBackup(f); };
