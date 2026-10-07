@@ -139,13 +139,29 @@ let state = {
 };
 
 /* ストレージ */
-async function storageGet(k, f){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : f; }catch(e){ return f; } }
-async function storageSet(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){ alert("容量不足です。不要な写真を削除してください。"); } }
+const loadFailed = {};
+async function storageGet(k, f){
+  let raw = null;
+  try { raw = localStorage.getItem(k); } catch(e){ loadFailed[k] = true; return f; }
+  if (raw === null) return f;
+  try { return JSON.parse(raw); }
+  catch(e){
+    // 壊れたデータは消さずに退避してから、初期値で起動する
+    try { localStorage.setItem(k + '__corrupt', raw); } catch(_){}
+    loadFailed[k] = true;
+    return f;
+  }
+}
+async function storageSet(k, v){
+  try { localStorage.setItem(k, JSON.stringify(v)); return true; }
+  catch(e){ alert("保存できませんでした（容量不足の可能性）。今回の内容は保存されていません。不要な写真を削除してください。"); return false; }
+}
 
 async function loadAll(){
   state.settings = await storageGet('settings', state.settings);
   state.recipes = await storageGet('recipes', []);
   state.records = await storageGet('records', {});
+  if (Object.keys(loadFailed).length) alert('保存データを正しく読み込めませんでした。壊れたデータは退避してあります。');
 }
 
 function esc(s){ return (s||'').toString().replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
@@ -479,23 +495,85 @@ function renderMoney(){
     </div>`;
 }
 
-function renderSettings(){
-  const el = document.getElementById('view-settings');
-  // データをJSONで確認するボタンを追加
-  el.innerHTML = `
-    <div class="settings-block">
-      <h3>データ管理</h3>
-      <button class="btn block" onclick="debugData()">現在のデータを表示する</button>
-      <div id="debug-area" style="margin-top:10px; font-size:10px; word-break:break-all; background:#eee; padding:5px;"></div>
-      <hr style="margin:20px 0;">
-      <button class="btn danger block" onclick="if(confirm('全てのデータを消去しますか？')) {localStorage.clear(); location.reload();}">全データを削除</button>
-    </div>`;
+/* バックアップ（書き出し・読み込み） */
+function getLastBackup(){
+  try { const v = JSON.parse(localStorage.getItem('lastBackup')); return v ? new Date(v).toLocaleString('ja-JP') : '未実施'; } catch(e){ return '未実施'; }
+}
+async function exportBackup(){
+  const data = { app:'GohanChokin', version:1, exportedAt:new Date().toISOString(), settings:state.settings, recipes:state.recipes, records:state.records };
+  const text = JSON.stringify(data);
+  const d = new Date();
+  const stamp = d.getFullYear() + String(d.getMonth()+1).padStart(2,'0') + String(d.getDate()).padStart(2,'0');
+  const name = 'gohanchokin-backup-' + stamp + '.json';
+  try {
+    const file = new File([text], name, {type:'application/json'});
+    if (navigator.canShare && navigator.canShare({files:[file]})) {
+      await navigator.share({files:[file], title:name});
+    } else {
+      const url = URL.createObjectURL(new Blob([text], {type:'application/json'}));
+      const a = document.createElement('a'); a.href = url; a.download = name;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+    }
+    await storageSet('lastBackup', new Date().toISOString());
+    renderSettings();
+  } catch(e){
+    if (e && e.name === 'AbortError') return;
+    alert('書き出しに失敗しました。');
+  }
+}
+async function importBackup(file){
+  if (!file) return;
+  let data;
+  try { data = JSON.parse(await file.text()); } catch(e){ alert('ファイルを読み込めませんでした。'); return; }
+  if (!data || data.app !== 'GohanChokin' || !data.settings || !data.records || Array.isArray(data.records) || !Array.isArray(data.recipes)) {
+    alert('GohanChokinのバックアップファイルではありません。'); return;
+  }
+  const nRec = Object.values(data.records).reduce((s,a) => s + (Array.isArray(a) ? a.length : 0), 0);
+  if (!confirm('バックアップ（記録' + nRec + '件・レシピ' + data.recipes.length + '件）で、今のデータを置き換えます。よろしいですか？')) return;
+  const keys = ['records','recipes','settings'];
+  const old = {};
+  keys.forEach(k => { try { old[k] = localStorage.getItem(k); } catch(e){ old[k] = null; } });
+  let ok = true;
+  for (const k of keys) { if (!(await storageSet(k, data[k]))) { ok = false; break; } }
+  if (!ok) {
+    keys.forEach(k => { try { if (old[k] === null) localStorage.removeItem(k); else localStorage.setItem(k, old[k]); } catch(e){} });
+    alert('復元に失敗したため、元のデータに戻しました。');
+    return;
+  }
+  alert('復元しました。');
+  location.reload();
 }
 
-function debugData(){
-  const area = document.getElementById('debug-area');
-  const recs = localStorage.getItem('records');
-  area.innerText = recs ? recs : "データが空です（null）";
+function renderSettings(){
+  const goal = Number(state.settings.goal) || 0;
+  document.getElementById('view-settings').innerHTML = `
+    <div class="settings-block">
+      <h3>目標設定</h3>
+      <label class="field">今月の目標貯金額（円）</label>
+      <input type="number" id="set-goal" value="${goal}">
+      <button class="btn block" id="btn-save-goal" style="margin-top:10px;">保存</button>
+    </div>
+    <div class="settings-block" style="margin-top:28px;">
+      <h3>バックアップ</h3>
+      <div style="font-size:14px; margin-bottom:10px;">最終バックアップ：${getLastBackup()}</div>
+      <button class="btn block" id="btn-export">データを書き出す</button>
+      <button class="btn secondary block" id="btn-import" style="margin-top:10px;">バックアップから復元</button>
+      <input type="file" id="import-file" accept=".json,application/json" style="display:none;">
+    </div>
+    <div class="settings-block" style="margin-top:28px;">
+      <h3>管理</h3>
+      <button class="btn danger block" onclick="if(confirm('リセットしますか？')) {localStorage.clear(); location.reload();}">全データ削除</button>
+    </div>`;
+  document.getElementById('btn-export').onclick = exportBackup;
+  document.getElementById('btn-import').onclick = () => document.getElementById('import-file').click();
+  document.getElementById('import-file').onchange = (e) => { const f = e.target.files[0]; e.target.value = ''; importBackup(f); };
+  document.getElementById('btn-save-goal').onclick = async () => {
+    state.settings.goal = Number(document.getElementById('set-goal').value) || 0;
+    await storageSet('settings', state.settings);
+    renderMoney();
+    alert('目標額を保存しました');
+  };
 }
 
 /* 初期化 */
