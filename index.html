@@ -495,6 +495,33 @@ function renderMoney(){
     </div>`;
 }
 
+/* 永続化リクエスト・保存状況 */
+async function requestPersist(){
+  try {
+    if (navigator.storage && navigator.storage.persist && navigator.storage.persisted) {
+      if (!(await navigator.storage.persisted())) await navigator.storage.persist();
+    }
+  } catch(e){}
+}
+function localStorageSizeMB(){
+  let n = 0;
+  try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); n += k.length + (localStorage.getItem(k) || '').length; } } catch(e){}
+  return n / 1048576;
+}
+async function updateStorageInfo(){
+  const el = document.getElementById('storage-info');
+  if (!el) return;
+  const mb = localStorageSizeMB();
+  let prot = 'この環境では確認できません';
+  try {
+    if (navigator.storage && navigator.storage.persisted) {
+      prot = (await navigator.storage.persisted()) ? '有効' : '未保護（容量不足時にiOSが削除する可能性があります）';
+    }
+  } catch(e){}
+  const warn = mb > 4 ? ' ⚠ 上限（約5MB）に近づいています。不要な写真を削除してください。' : '';
+  el.textContent = '保存データ量：約' + mb.toFixed(1) + 'MB / 約5MB' + warn + '　自動削除からの保護：' + prot;
+}
+
 /* バックアップ（書き出し・読み込み） */
 function getLastBackup(){
   try { const v = JSON.parse(localStorage.getItem('lastBackup')); return v ? new Date(v).toLocaleString('ja-JP') : '未実施'; } catch(e){ return '未実施'; }
@@ -557,6 +584,7 @@ function renderSettings(){
     <div class="settings-block" style="margin-top:28px;">
       <h3>バックアップ</h3>
       <div style="font-size:14px; margin-bottom:10px;">最終バックアップ：${getLastBackup()}</div>
+      <div id="storage-info" style="font-size:13px; margin-bottom:10px;"></div>
       <button class="btn block" id="btn-export">データを書き出す</button>
       <button class="btn secondary block" id="btn-import" style="margin-top:10px;">バックアップから復元</button>
       <input type="file" id="import-file" accept=".json,application/json" style="display:none;">
@@ -565,7 +593,8 @@ function renderSettings(){
       <h3>管理</h3>
       <button class="btn danger block" onclick="if(confirm('リセットしますか？')) {localStorage.clear(); location.reload();}">全データ削除</button>
     </div>`;
-  document.getElementById('btn-export').onclick = exportBackup;
+  updateStorageInfo();
+  document.getElementById('btn-export').onclick = () => { requestPersist(); exportBackup(); };
   document.getElementById('btn-import').onclick = () => document.getElementById('import-file').click();
   document.getElementById('import-file').onchange = (e) => { const f = e.target.files[0]; e.target.value = ''; importBackup(f); };
   document.getElementById('btn-save-goal').onclick = async () => {
@@ -581,6 +610,7 @@ function renderSettings(){
   document.querySelectorAll('.tab-btn').forEach(btn => btn.onclick = () => setTab(btn.dataset.tab));
   document.getElementById('fab-add-recipe').onclick = () => openRecipeForm(null);
   try { await loadAll(); setTab('calendar'); } catch(e) { console.error(e); } 
+  requestPersist();
 })();
 </script>
 </body>
